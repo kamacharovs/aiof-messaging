@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace aiof.messaging.data
 {
+    /// <summary>
+    /// Data transfer object of a message. Based on the type, lower level logic is performed and the message is send appropriately
+    /// </summary>
     public class Message : IMessage
     {
         public Guid PublicKey { get; set; } = Guid.NewGuid();

@@ -6,4 +6,9 @@ namespace aiof.messaging.data
     {
         Email
     }
+
+    public static class Keys
+    {
+        public const string ServiceBusConnectionString = nameof(ServiceBusConnectionString);
+    }
 }
