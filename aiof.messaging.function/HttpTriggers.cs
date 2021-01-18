@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
+using aiof.messaging.data;
 using aiof.messaging.services;
 
 namespace aiof.messaging.function
@@ -32,9 +33,11 @@ namespace aiof.messaging.function
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
             string name = req.Query["name"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var msg = JsonConvert.DeserializeObject<Message>(requestBody);
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 

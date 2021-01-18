@@ -4,8 +4,8 @@ using System.Text;
 
 namespace aiof.messaging.data
 {
-    public interface IMessage
+    public class Message : IMessage
     {
-        MessageType Type { get; set; }
+        public MessageType Type { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using aiof.messaging.services;
 namespace aiof.messaging.function
 {
     public class ServiceBusTriggers
-    {
+    {/*
         private readonly ILogger<ServiceBusTriggers> _logger;
         private readonly IMessageRepository _repo;
 
@@ -21,10 +21,10 @@ namespace aiof.messaging.function
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        [FunctionName("ServiceBusInbound")]
+        [FunctionName("Inbound")]
         public void Run([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
         {
             _logger.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
         }
-    }
+    */}
 }
