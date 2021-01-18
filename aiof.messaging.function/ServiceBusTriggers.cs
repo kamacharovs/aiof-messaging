@@ -10,18 +10,21 @@ namespace aiof.messaging.function
 {
     public class ServiceBusTriggers
     {
-        /*private readonly IMessageRepository _repo;
+        private readonly ILogger<ServiceBusTriggers> _logger;
+        private readonly IMessageRepository _repo;
 
-        public ServiceBusTriggers(IMessageRepository repo)
+        public ServiceBusTriggers(
+            ILogger<ServiceBusTriggers> logger,
+            IMessageRepository repo)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         [FunctionName("ServiceBusInbound")]
-        public void Run([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem, ILogger log)
+        public void Run([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
         {
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+            _logger.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
         }
-        */
     }
 }

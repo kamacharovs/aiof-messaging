@@ -9,16 +9,28 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
+using aiof.messaging.services;
+
 namespace aiof.messaging.function
 {
     public class HttpTriggers
     {
-        [FunctionName("MessageSend")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "message/send")] HttpRequest req,
-            ILogger log)
+        private readonly ILogger<HttpTriggers> _logger;
+        private readonly IMessageRepository _repo;
+
+        public HttpTriggers(
+            ILogger<HttpTriggers> logger,
+            IMessageRepository repo)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+        }
+
+        [FunctionName("MessageSend")]
+        public async Task<IActionResult> MessageSendAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message/send")] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
 
