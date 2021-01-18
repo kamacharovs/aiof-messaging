@@ -5,6 +5,9 @@ using System.Text;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 using aiof.messaging.data;
 using aiof.messaging.services;
 

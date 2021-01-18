@@ -23,7 +23,7 @@ namespace aiof.messaging.services
             {
                 case MessageType.Email:
                     //TODO add validation
-                    SendEmailAsync();
+                    SendEmailAsync(message);
                     break;
                 default:
                     Console.WriteLine("default");
@@ -31,9 +31,10 @@ namespace aiof.messaging.services
             }
         }
 
-        public void SendEmailAsync()
+        public void SendEmailAsync(IMessage message)
         {
-
+            var cc = string.Join(",", message.Cc);
+            var bcc = string.Join(",", message.Bcc);
         }
     }
 }
