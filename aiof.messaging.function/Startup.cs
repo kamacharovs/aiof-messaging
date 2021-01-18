@@ -5,6 +5,9 @@ using System.Text;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
+using aiof.messaging.data;
+using aiof.messaging.services;
+
 [assembly: FunctionsStartup(typeof(aiof.messaging.function.Startup))]
 namespace aiof.messaging.function
 {
@@ -12,7 +15,7 @@ namespace aiof.messaging.function
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
         }
     }
 }
