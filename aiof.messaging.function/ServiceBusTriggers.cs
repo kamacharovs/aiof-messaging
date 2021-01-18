@@ -10,17 +10,18 @@ namespace aiof.messaging.function
 {
     public class ServiceBusTriggers
     {
-        private readonly IMessageRepository _repo;
+        /*private readonly IMessageRepository _repo;
 
         public ServiceBusTriggers(IMessageRepository repo)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        [FunctionName("Inbound")]
-        public void Run([QueueTrigger("inbound", Connection = "AzureWebJobsStorage")] string myQueueItem, ILogger log)
+        [FunctionName("ServiceBusInbound")]
+        public void Run([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem, ILogger log)
         {
-            log.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
+            log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
         }
+        */
     }
 }
