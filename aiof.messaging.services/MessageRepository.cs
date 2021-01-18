@@ -17,7 +17,21 @@ namespace aiof.messaging.services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void SendAsync()
+        public void SendAsync(IMessage message)
+        {
+            switch (message.Type)
+            {
+                case MessageType.Email:
+                    //TODO add validation
+                    SendEmailAsync();
+                    break;
+                default:
+                    Console.WriteLine("default");
+                    break;
+            }
+        }
+
+        public void SendEmailAsync()
         {
 
         }
