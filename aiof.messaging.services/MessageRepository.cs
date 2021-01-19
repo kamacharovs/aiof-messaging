@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Configuration;
+
+using Azure.Messaging.ServiceBus;
 
 using aiof.messaging.data;
 
@@ -11,23 +13,26 @@ namespace aiof.messaging.services
     public class MessageRepository : IMessageRepository
     {
         private readonly ILogger<MessageRepository> _logger;
-        private readonly IQueueClient _queueClient;
+        private readonly IConfiguration _config;
+        private readonly ServiceBusClient _client;
 
         public MessageRepository(
             ILogger<MessageRepository> logger,
-            IQueueClient queueClient)
+            IConfiguration config,
+            ServiceBusClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _queueClient = queueClient;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public void SendAsync(IMessage message)
+        public async Task SendAsync(IMessage message)
         {
             switch (message.Type)
             {
                 case MessageType.Email:
                     //TODO add validation
-                    SendEmailAsync(message);
+                    await SendEmailAsync(message);
                     break;
                 default:
                     Console.WriteLine("default");
@@ -35,7 +40,7 @@ namespace aiof.messaging.services
             }
         }
 
-        public void SendEmailAsync(IMessage message)
+        public async Task SendEmailAsync(IMessage message)
         {
             /*
              * The send email logic would be as follows
@@ -44,11 +49,21 @@ namespace aiof.messaging.services
              */
             var cc = string.Join(",", message.Cc);
             var bcc = string.Join(",", message.Bcc);
+
+            await SendEmailMessageAsync();
         }
 
-        public async Task SendMessageAsync()
+        public async Task SendEmailMessageAsync()
         {
+            // create a sender for the queue 
+            var sender = _client.CreateSender(_config[Keys.EmailQueueName]);
 
+            // create a message that we can send
+            var message = new ServiceBusMessage("Hello world!");
+
+            // send the message
+            await sender.SendMessageAsync(message);
+            Console.WriteLine($"Sent a single message to the queue: {_config[Keys.EmailQueueName]}");
         }
     }
 }

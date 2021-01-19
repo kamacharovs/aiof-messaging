@@ -37,7 +37,7 @@ namespace aiof.messaging.function
 
             var msg = JsonConvert.DeserializeObject<Message>(requestBody);
 
-            _repo.SendAsync(msg);
+            await _repo.SendAsync(msg);
 
             return new OkObjectResult(msg);
         }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+
+using Azure.Messaging.ServiceBus;
 
 using aiof.messaging.data;
 using aiof.messaging.services;
@@ -22,10 +23,7 @@ namespace aiof.messaging.function
             _config = builder.GetContext().Configuration;
 
             builder.Services.AddSingleton(_config);
-
-            //builder.Services.AddSingleton(new QueueClient(
-            //    new ServiceBusConnectionStringBuilder(_config[Keys.ServiceBusConnectionString]),
-            //    ReceiveMode.PeekLock));
+            builder.Services.AddSingleton(new ServiceBusClient(_config[Keys.ServiceBusConnectionString]));
 
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
         }

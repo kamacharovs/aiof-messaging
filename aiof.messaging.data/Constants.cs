@@ -10,5 +10,6 @@ namespace aiof.messaging.data
     public static class Keys
     {
         public const string ServiceBusConnectionString = nameof(ServiceBusConnectionString);
+        public const string EmailQueueName = nameof(EmailQueueName);
     }
 }
