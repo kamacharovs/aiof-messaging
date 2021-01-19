@@ -29,6 +29,7 @@ namespace aiof.messaging.function
             builder.Services.AddFeatureManagement();
 
             builder.Services
+                .AddLogging()
                 .AddSingleton(_config)
                 .AddSingleton(new ServiceBusClient(_config[Keys.ServiceBusConnectionString]))
                 .AddSingleton<IEnvConfiguration, EnvConfiguration>();

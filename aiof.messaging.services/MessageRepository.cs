@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -63,6 +65,28 @@ namespace aiof.messaging.services
 
                 _logger.LogInformation("Sent message={message} to queue={queue}",
                     msgStr,
+                    queue);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error while sending {queue} message", queue);
+            }
+        }
+        public async Task SendMessagesAsync(
+            string queue,
+            IEnumerable<object> messages)
+        {
+            var msgsStr = JsonConvert.SerializeObject(messages);
+
+            try
+            {
+                var sender = _client.CreateSender(queue);
+                var sbMessages = new ServiceBusMessage(msgsStr);
+
+                await sender.SendMessageAsync(sbMessages);
+
+                _logger.LogInformation("Sent message count={messageCount} to queue={queue}",
+                    messages.Count(),
                     queue);
             }
             catch (Exception e)

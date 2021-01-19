@@ -11,6 +11,12 @@ namespace aiof.messaging.services
     {
         Task SendInboundMessageAsync(IMessage message);
         Task SendEmailMessageAsync(IEmailMessage message);
+        Task SendMessageAsync(
+            string queue,
+            object message);
+        Task SendMessagesAsync(
+            string queue,
+            IEnumerable<object> messages);
         Task SendAsync(IMessage message);
     }
 }
