@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-
 using Azure.Messaging.ServiceBus;
+
+using AutoMapper;
 
 using aiof.messaging.data;
 
@@ -14,15 +15,18 @@ namespace aiof.messaging.services
     {
         private readonly ILogger<MessageRepository> _logger;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
         private readonly ServiceBusClient _client;
 
         public MessageRepository(
             ILogger<MessageRepository> logger,
             IConfiguration config,
+            IMapper mapper,
             ServiceBusClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _config = config ?? throw new ArgumentNullException(nameof(config));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
@@ -47,10 +51,11 @@ namespace aiof.messaging.services
              * - receive message, do validation and create the email message
              * - put it in an "email" queue where a Logic App will pick it up and send the actual email
              */
+            var emailMsg = _mapper.Map<IEmailMessage>(message);
             var cc = string.Join(",", message.Cc);
             var bcc = string.Join(",", message.Bcc);
 
-            await SendEmailMessageAsync();
+            //await SendEmailMessageAsync();
         }
 
         public async Task SendEmailMessageAsync()

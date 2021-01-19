@@ -5,8 +5,9 @@ using System.Text;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-
 using Azure.Messaging.ServiceBus;
+
+using AutoMapper;
 
 using aiof.messaging.data;
 using aiof.messaging.services;
@@ -21,6 +22,8 @@ namespace aiof.messaging.function
         public override void Configure(IFunctionsHostBuilder builder)
         {
             _config = builder.GetContext().Configuration;
+
+            builder.Services.AddAutoMapper(typeof(AutoMappingProfile).Assembly);
 
             builder.Services.AddSingleton(_config);
             builder.Services.AddSingleton(new ServiceBusClient(_config[Keys.ServiceBusConnectionString]));

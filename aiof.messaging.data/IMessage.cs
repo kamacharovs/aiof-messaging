@@ -13,6 +13,7 @@ namespace aiof.messaging.data
 
         string From { get; set; }
         string To { get; set; }
+        string Subject { get; set; }
         ICollection<string> Cc { get; set; }
         ICollection<string> Bcc { get; set; }
     }

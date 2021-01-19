@@ -25,8 +25,6 @@ namespace aiof.messaging.function
         public void Run([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
         {
             _logger.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
-
-            var k = 1;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace aiof.messaging.data
          */
         public string From { get; set; }
         public string To { get; set; }
+        public string Subject { get; set; }
         public ICollection<string> Cc { get; set; } = new List<string>();
         public ICollection<string> Bcc { get; set; } = new List<string>();
     }
