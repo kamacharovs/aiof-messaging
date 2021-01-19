@@ -36,9 +36,7 @@ namespace aiof.messaging.function
         public async Task<IActionResult> MessageSendAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message/send")] Message msg)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-
-            await _repo.SendMessageAsync(_config[Keys.InboundQueueName], msg);
+            await _repo.SendInboundMessageAsync(msg);
 
             return new OkObjectResult("");
         }

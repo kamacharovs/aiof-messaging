@@ -15,20 +15,30 @@ namespace aiof.messaging.services
     public class MessageRepository : IMessageRepository
     {
         private readonly ILogger<MessageRepository> _logger;
-        private readonly IConfiguration _config;
+        private readonly IEnvConfiguration _envConfig;
         private readonly IMapper _mapper;
         private readonly ServiceBusClient _client;
 
         public MessageRepository(
             ILogger<MessageRepository> logger,
-            IConfiguration config,
+            IEnvConfiguration envConfig,
             IMapper mapper,
             ServiceBusClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _envConfig = envConfig ?? throw new ArgumentNullException(nameof(envConfig));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _client = client ?? throw new ArgumentNullException(nameof(client));
+        }
+
+        public async Task SendInboundMessageAsync(IMessage message)
+        {
+            await SendMessageAsync(_envConfig.InboundQueueName, message);
+        }
+
+        public async Task SendEmailMessageAsync(IMessage message)
+        {
+            await SendMessageAsync(_envConfig.EmailQueueName, message);
         }
 
         public async Task SendMessageAsync(
@@ -78,7 +88,7 @@ namespace aiof.messaging.services
             var emailMsg = _mapper.Map<IEmailMessage>(message);
 
             await SendMessageAsync(
-                _config[Keys.EmailQueueName], 
+                _envConfig.EmailQueueName, 
                 emailMsg);
         }
     }

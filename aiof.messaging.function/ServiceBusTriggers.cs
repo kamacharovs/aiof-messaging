@@ -27,8 +27,6 @@ namespace aiof.messaging.function
         [FunctionName("Inbound")]
         public async Task RunAsync([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
         {
-            _logger.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
-
             var msg = JsonConvert.DeserializeObject<Message>(myQueueItem);
 
             await _repo.SendAsync(msg);
