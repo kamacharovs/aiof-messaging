@@ -31,9 +31,18 @@ stages:
         projects: $(projectFile)
         arguments: -c $(buildConfiguration) -f $(targetFramework)
 
-    - task: DotNetCoreCLI@2
+    - task: ArchiveFiles@2
+      displayName: archive
+      inputs:
+        rootFolderOrFile: publish/
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
       displayName: publish
       inputs:
-        command: publish
-        arguments: -c $(buildConfiguration) -o app/publish -f $(targetFramework)
-        zipAfterPublish: false
+        pathtoPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: aiof-messaging
+      
