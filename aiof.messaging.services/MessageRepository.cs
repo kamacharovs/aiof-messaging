@@ -7,6 +7,7 @@ using Azure.Messaging.ServiceBus;
 
 using Newtonsoft.Json;
 using AutoMapper;
+using FluentValidation;
 
 using aiof.messaging.data;
 
@@ -18,17 +19,23 @@ namespace aiof.messaging.services
         private readonly IEnvConfiguration _envConfig;
         private readonly IMapper _mapper;
         private readonly ServiceBusClient _client;
+        private readonly AbstractValidator<IMessage> _messageValidator;
+        private readonly AbstractValidator<IEmailMessage> _emailMessageValidator;
 
         public MessageRepository(
             ILogger<MessageRepository> logger,
             IEnvConfiguration envConfig,
             IMapper mapper,
-            ServiceBusClient client)
+            ServiceBusClient client,
+            AbstractValidator<IMessage> messageValidator,
+            AbstractValidator<IEmailMessage> emailMessageValidator)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _envConfig = envConfig ?? throw new ArgumentNullException(nameof(envConfig));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _messageValidator = messageValidator ?? throw new ArgumentNullException(nameof(messageValidator));
+            _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
         }
 
         public async Task SendInboundMessageAsync(IMessage message)
@@ -36,7 +43,7 @@ namespace aiof.messaging.services
             await SendMessageAsync(_envConfig.InboundQueueName, message);
         }
 
-        public async Task SendEmailMessageAsync(IMessage message)
+        public async Task SendEmailMessageAsync(IEmailMessage message)
         {
             await SendMessageAsync(_envConfig.EmailQueueName, message);
         }
@@ -69,27 +76,14 @@ namespace aiof.messaging.services
             switch (message.Type)
             {
                 case MessageType.Email:
-                    //TODO add validation
-                    await SendEmailAsync(message);
+                    var emailMsg = _mapper.Map<IEmailMessage>(message);
+                    await _emailMessageValidator.ValidateAndThrowAsync(emailMsg);
+                    await SendEmailMessageAsync(emailMsg);
                     break;
                 default:
                     Console.WriteLine("default");
                     break;
             }
-        }
-
-        public async Task SendEmailAsync(IMessage message)
-        {
-            /*
-             * The send email logic would be as follows
-             * - receive message, do validation and create the email message
-             * - put it in an "email" queue where a Logic App will pick it up and send the actual email
-             */
-            var emailMsg = _mapper.Map<IEmailMessage>(message);
-
-            await SendMessageAsync(
-                _envConfig.EmailQueueName, 
-                emailMsg);
         }
     }
 }

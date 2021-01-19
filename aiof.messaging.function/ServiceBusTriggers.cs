@@ -25,11 +25,19 @@ namespace aiof.messaging.function
         }
 
         [FunctionName("Inbound")]
-        public async Task RunAsync([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
+        public async Task InboundAsync(
+            [ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string message)
         {
-            var msg = JsonConvert.DeserializeObject<Message>(myQueueItem);
+            var msg = JsonConvert.DeserializeObject<Message>(message);
 
-            await _repo.SendAsync(msg);
+            try
+            {
+                await _repo.SendAsync(msg);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error while processing inbound with message={message}", message);
+            }
         }
     }
 }

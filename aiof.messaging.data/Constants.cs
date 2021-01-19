@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Text;
+using System.Collections.Generic;
 
 namespace aiof.messaging.data
 {
     public static class MessageType
     {
         public const string Email = nameof(Email);
+
+        public static IEnumerable<string> All => new List<string>
+        {
+            Email
+        };
     }
 
     public static class Keys

@@ -9,6 +9,7 @@ using Microsoft.FeatureManagement;
 using Azure.Messaging.ServiceBus;
 
 using AutoMapper;
+using FluentValidation;
 
 using aiof.messaging.data;
 using aiof.messaging.services;
@@ -32,7 +33,10 @@ namespace aiof.messaging.function
                 .AddSingleton(new ServiceBusClient(_config[Keys.ServiceBusConnectionString]))
                 .AddSingleton<IEnvConfiguration, EnvConfiguration>();
 
-            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services
+                .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
+                .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
+                .AddScoped<IMessageRepository, MessageRepository>();
         }
     }
 }
