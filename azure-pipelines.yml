@@ -1,0 +1,39 @@
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  buildConfiguration: release
+  targetFramework: netcoreapp3.1
+  sdkVersion: 3.1
+  projectFile: aiof.messaging.function/aiof.messaging.function.csproj
+  projectFileTest: aiof.messaging.tests/aiof.messaging.tests.csproj
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs:  
+  - job: Build
+    displayName: Build
+    steps:
+    - task: UseDotNet@2
+      displayName: install .net3.1 sdk
+      inputs:
+        packageType: sdk
+        version: $(sdkVersion)
+
+    - task: DotNetCoreCLI@2
+      displayName: build
+      inputs:
+        command: build
+        projects: $(projectFile)
+        arguments: -c $(buildConfiguration) -f $(targetFramework)
+
+    - task: DotNetCoreCLI@2
+      displayName: publish
+      inputs:
+        command: publish
+        arguments: -c $(buildConfiguration) -o app/publish -f $(targetFramework)
+        zipAfterPublish: false
