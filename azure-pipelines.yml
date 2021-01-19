@@ -29,7 +29,7 @@ stages:
       inputs:
         command: build
         projects: $(projectFile)
-        arguments: -c $(buildConfiguration) -f $(targetFramework)
+        arguments: -o publish -c $(buildConfiguration) -f $(targetFramework)
 
     - task: ArchiveFiles@2
       displayName: archive
@@ -43,6 +43,6 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: publish
       inputs:
-        pathtoPublish: $(Build.ArtifactStagingDirectory)
+        pathToPublish: $(Build.ArtifactStagingDirectory)
         artifactName: aiof-messaging
       
