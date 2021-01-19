@@ -40,6 +40,13 @@ namespace aiof.messaging.function
                     StatusCode = (int)HttpStatusCode.BadRequest
                 };
             }
+            catch (Exception e)
+            {
+                return new ObjectResult(e.Message)
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest
+                };
+            }
         }
     }
 }

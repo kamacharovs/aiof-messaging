@@ -7,10 +7,12 @@ namespace aiof.messaging.data
     public static class MessageType
     {
         public const string Email = nameof(Email);
+        public const string Sms = nameof(Sms);
 
         public static IEnumerable<string> All => new List<string>
         {
-            Email
+            Email,
+            Sms
         };
     }
 

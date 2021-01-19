@@ -84,6 +84,7 @@ namespace aiof.messaging.services
             catch (Exception e)
             {
                 _logger.LogError(e, "Error while sending {queue} message", queue);
+                throw e;
             }
         }
         public async Task SendMessagesAsync(
