@@ -26,11 +26,9 @@ namespace aiof.messaging.function
 
         [FunctionName("Inbound")]
         public async Task InboundAsync(
-            [ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string message)
+            [ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] Message message)
         {
-            var msg = JsonConvert.DeserializeObject<Message>(message);
-
-            await _repo.SendAsync(msg);
+            await _repo.SendAsync(message);
         }
     }
 }
