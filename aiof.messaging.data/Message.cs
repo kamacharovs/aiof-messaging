@@ -12,7 +12,7 @@ namespace aiof.messaging.data
     public class Message : IMessage
     {
         public Guid PublicKey { get; set; } = Guid.NewGuid();
-        public MessageType Type { get; set; }
+        public string Type { get; set; }
         public int? UserId { get; set; }
         public bool? IsTest { get; set; }
 

@@ -7,7 +7,7 @@ namespace aiof.messaging.data
     public interface IMessage
     {
         Guid PublicKey { get; set; }
-        MessageType Type { get; set; }
+        string Type { get; set; }
         int? UserId { get; set; }
         bool? IsTest { get; set; }
 

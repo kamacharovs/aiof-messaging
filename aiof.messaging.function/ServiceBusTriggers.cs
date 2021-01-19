@@ -1,9 +1,12 @@
 using System;
+using System.Threading.Tasks;
 
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
+using Newtonsoft.Json;
+
+using aiof.messaging.data;
 using aiof.messaging.services;
 
 namespace aiof.messaging.function
@@ -22,9 +25,13 @@ namespace aiof.messaging.function
         }
 
         [FunctionName("Inbound")]
-        public void Run([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
+        public async Task RunAsync([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
         {
             _logger.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+
+            var msg = JsonConvert.DeserializeObject<Message>(myQueueItem);
+
+            await _repo.SendAsync(msg);
         }
     }
 }

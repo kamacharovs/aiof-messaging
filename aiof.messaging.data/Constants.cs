@@ -2,14 +2,15 @@
 
 namespace aiof.messaging.data
 {
-    public enum MessageType
+    public static class MessageType
     {
-        Email
+        public const string Email = nameof(Email);
     }
 
     public static class Keys
     {
         public const string ServiceBusConnectionString = nameof(ServiceBusConnectionString);
         public const string EmailQueueName = nameof(EmailQueueName);
+        public const string InboundQueueName = nameof(InboundQueueName);
     }
 }
