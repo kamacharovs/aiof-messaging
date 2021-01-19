@@ -73,16 +73,26 @@ namespace aiof.messaging.services
 
         public async Task SendAsync(IMessage message)
         {
-            switch (message.Type)
+            if (message.Type == MessageType.Email)
             {
-                case MessageType.Email:
-                    var emailMsg = _mapper.Map<IEmailMessage>(message);
+                var emailMsg = _mapper.Map<IEmailMessage>(message);
+
+                try
+                {
                     await _emailMessageValidator.ValidateAndThrowAsync(emailMsg);
-                    await SendEmailMessageAsync(emailMsg);
-                    break;
-                default:
-                    Console.WriteLine("default");
-                    break;
+                }
+                catch (ValidationException e)
+                {
+                    _logger.LogError(e,
+                        "Validation error while processing {queue} with message={message}",
+                        _envConfig.InboundQueueName,
+                        message);
+
+                    //TODO just dead letter queue on validation error
+                    return;
+                }
+
+                await SendEmailMessageAsync(emailMsg);
             }
         }
     }

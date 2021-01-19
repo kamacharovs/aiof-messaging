@@ -30,14 +30,7 @@ namespace aiof.messaging.function
         {
             var msg = JsonConvert.DeserializeObject<Message>(message);
 
-            try
-            {
-                await _repo.SendAsync(msg);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error while processing inbound with message={message}", message);
-            }
+            await _repo.SendAsync(msg);
         }
     }
 }
