@@ -7,7 +7,7 @@ resources:
 variables:
   buildConfiguration: release
   targetFramework: netcoreapp3.1
-  sdkVersion: 3.1
+  sdkVersion: 3.x
   projectFile: aiof.messaging.function/aiof.messaging.function.csproj
   projectFileTest: aiof.messaging.tests/aiof.messaging.tests.csproj
 
