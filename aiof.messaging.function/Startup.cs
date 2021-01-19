@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.FeatureManagement;
+using Azure.Messaging.ServiceBus;
+
+using AutoMapper;
+using FluentValidation;
 
 using aiof.messaging.data;
 using aiof.messaging.services;
@@ -21,13 +25,18 @@ namespace aiof.messaging.function
         {
             _config = builder.GetContext().Configuration;
 
-            builder.Services.AddSingleton(_config);
+            builder.Services.AddAutoMapper(typeof(AutoMappingProfile).Assembly);
+            builder.Services.AddFeatureManagement();
 
-            //builder.Services.AddSingleton(new QueueClient(
-            //    new ServiceBusConnectionStringBuilder(_config[Keys.ServiceBusConnectionString]),
-            //    ReceiveMode.PeekLock));
+            builder.Services
+                .AddSingleton(_config)
+                .AddSingleton(new ServiceBusClient(_config[Keys.ServiceBusConnectionString]))
+                .AddSingleton<IEnvConfiguration, EnvConfiguration>();
 
-            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services
+                .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
+                .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
+                .AddScoped<IMessageRepository, MessageRepository>();
         }
     }
 }

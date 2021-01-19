@@ -1,0 +1,48 @@
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  buildConfiguration: release
+  targetFramework: netcoreapp3.1
+  sdkVersion: 3.x
+  projectFile: aiof.messaging.function/aiof.messaging.function.csproj
+  projectFileTest: aiof.messaging.tests/aiof.messaging.tests.csproj
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs:  
+  - job: Build
+    displayName: Build
+    steps:
+    - task: UseDotNet@2
+      displayName: install .net3.1 sdk
+      inputs:
+        packageType: sdk
+        version: $(sdkVersion)
+
+    - task: DotNetCoreCLI@2
+      displayName: build
+      inputs:
+        command: build
+        projects: $(projectFile)
+        arguments: -o publish -c $(buildConfiguration) -f $(targetFramework)
+
+    - task: ArchiveFiles@2
+      displayName: archive
+      inputs:
+        rootFolderOrFile: publish/
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: publish
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: aiof-messaging
+      

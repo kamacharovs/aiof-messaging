@@ -1,15 +1,18 @@
 using System;
+using System.Threading.Tasks;
 
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
+using Newtonsoft.Json;
+
+using aiof.messaging.data;
 using aiof.messaging.services;
 
 namespace aiof.messaging.function
 {
     public class ServiceBusTriggers
-    {/*
+    {
         private readonly ILogger<ServiceBusTriggers> _logger;
         private readonly IMessageRepository _repo;
 
@@ -22,9 +25,10 @@ namespace aiof.messaging.function
         }
 
         [FunctionName("Inbound")]
-        public void Run([ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] string myQueueItem)
+        public async Task InboundAsync(
+            [ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] Message message)
         {
-            _logger.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+            await _repo.SendAsync(message);
         }
-    */}
+    }
 }

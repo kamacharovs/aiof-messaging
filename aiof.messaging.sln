@@ -7,13 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aiof.messaging.function", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8E1D68EA-CC2E-4AEA-A279-05F29F6F93C5}"
 	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aiof.messaging.data", "aiof.messaging.data\aiof.messaging.data.csproj", "{49855267-B729-4BB3-94C9-1FB6382DAD74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aiof.messaging.data", "aiof.messaging.data\aiof.messaging.data.csproj", "{49855267-B729-4BB3-94C9-1FB6382DAD74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aiof.messaging.services", "aiof.messaging.services\aiof.messaging.services.csproj", "{54EDD075-5CF6-487F-9F25-90ACBE0E5089}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aiof.messaging.services", "aiof.messaging.services\aiof.messaging.services.csproj", "{54EDD075-5CF6-487F-9F25-90ACBE0E5089}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
