@@ -1,15 +1,13 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Net;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 
-using Newtonsoft.Json;
+using FluentValidation;
 
 using aiof.messaging.data;
 using aiof.messaging.services;
@@ -18,17 +16,10 @@ namespace aiof.messaging.function
 {
     public class HttpTriggers
     {
-        private readonly ILogger<HttpTriggers> _logger;
-        private readonly IConfiguration _config;
         private readonly IMessageRepository _repo;
 
-        public HttpTriggers(
-            ILogger<HttpTriggers> logger,
-            IConfiguration config,
-            IMessageRepository repo)
+        public HttpTriggers(IMessageRepository repo)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
@@ -36,9 +27,19 @@ namespace aiof.messaging.function
         public async Task<IActionResult> MessageSendAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message/send")] Message msg)
         {
-            await _repo.SendInboundMessageAsync(msg);
+            try
+            {
+                await _repo.SendInboundMessageAsync(msg);
 
-            return new OkObjectResult("");
+                return new OkObjectResult("");
+            }
+            catch (ValidationException e)
+            {
+                return new ObjectResult(e.Message)
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest
+                };
+            }
         }
     }
 }

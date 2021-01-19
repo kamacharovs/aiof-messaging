@@ -42,6 +42,20 @@ namespace aiof.messaging.services
 
         public async Task SendInboundMessageAsync(IMessage message)
         {
+            try
+            {
+                await _messageValidator.ValidateAndThrowAsync(message);
+            }
+            catch (ValidationException e)
+            {
+                _logger.LogError(e,
+                    "Validation error while processing {queue} with message={message}",
+                    _envConfig.InboundQueueName,
+                    message);
+
+                throw e;
+            }
+
             await SendMessageAsync(_envConfig.InboundQueueName, message);
         }
 
