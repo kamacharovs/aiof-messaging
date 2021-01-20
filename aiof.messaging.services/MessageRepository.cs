@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +20,7 @@ namespace aiof.messaging.services
         private readonly ILogger<MessageRepository> _logger;
         private readonly IEnvConfiguration _envConfig;
         private readonly IMapper _mapper;
+        private readonly ITestConfigRepository _testConfigRepo;
         private readonly ServiceBusClient _client;
         private readonly AbstractValidator<IMessage> _messageValidator;
         private readonly AbstractValidator<IEmailMessage> _emailMessageValidator;
@@ -26,6 +29,7 @@ namespace aiof.messaging.services
             ILogger<MessageRepository> logger,
             IEnvConfiguration envConfig,
             IMapper mapper,
+            ITestConfigRepository testConfigRepo,
             ServiceBusClient client,
             AbstractValidator<IMessage> messageValidator,
             AbstractValidator<IEmailMessage> emailMessageValidator)
@@ -33,6 +37,7 @@ namespace aiof.messaging.services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _envConfig = envConfig ?? throw new ArgumentNullException(nameof(envConfig));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _testConfigRepo = testConfigRepo ?? throw new ArgumentNullException(nameof(testConfigRepo));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _messageValidator = messageValidator ?? throw new ArgumentNullException(nameof(messageValidator));
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
@@ -40,11 +45,13 @@ namespace aiof.messaging.services
 
         public async Task SendInboundMessageAsync(IMessage message)
         {
+            await _messageValidator.ValidateAndThrowAsync(message);
             await SendMessageAsync(_envConfig.InboundQueueName, message);
         }
 
         public async Task SendEmailMessageAsync(IEmailMessage message)
         {
+            await _emailMessageValidator.ValidateAndThrowAsync(message);
             await SendMessageAsync(_envConfig.EmailQueueName, message);
         }
 
@@ -54,43 +61,34 @@ namespace aiof.messaging.services
         {
             var msgStr = JsonConvert.SerializeObject(message);
 
-            try
-            {
-                var sender = _client.CreateSender(queue);
-                var sbMessage = new ServiceBusMessage(msgStr);
+            var sender = _client.CreateSender(queue);
+            var sbMessage = new ServiceBusMessage(msgStr);
 
-                await sender.SendMessageAsync(sbMessage);
+            await sender.SendMessageAsync(sbMessage);
 
-                _logger.LogInformation("Sent message={message} to queue={queue}",
-                    msgStr,
-                    queue);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error while sending {queue} message", queue);
-            }
+            _logger.LogInformation("Sent message={message} to queue={queue}",
+                msgStr,
+                queue);
         }
 
         public async Task SendAsync(IMessage message)
         {
             if (message.Type == MessageType.Email)
             {
+                //Check if it's test
+                if (message.TestConfig?.IsTest == true
+                    && message.TestConfig?.UseConfig == true)
+                {
+                    var id = (int)message.TestConfig.Id;
+                    var testConfig = await _testConfigRepo.GetAsync(id);
+
+                    message.To = testConfig.Email;
+                    message.Subject = testConfig.Subject ?? $"[Message Test Email] Id={id}";
+                    message.Cc = null;
+                    message.Bcc = null;
+                }
+
                 var emailMsg = _mapper.Map<IEmailMessage>(message);
-
-                try
-                {
-                    await _emailMessageValidator.ValidateAndThrowAsync(emailMsg);
-                }
-                catch (ValidationException e)
-                {
-                    _logger.LogError(e,
-                        "Validation error while processing {queue} with message={message}",
-                        _envConfig.InboundQueueName,
-                        message);
-
-                    //TODO just dead letter queue on validation error
-                    return;
-                }
 
                 await SendEmailMessageAsync(emailMsg);
             }
