@@ -40,22 +40,10 @@ namespace aiof.messaging.services
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
         }
 
+        //TODO figure out how much validation should be actually do
+        //TODO look into creating your own re-processing queue
         public async Task SendInboundMessageAsync(IMessage message)
         {
-            try
-            {
-                await _messageValidator.ValidateAndThrowAsync(message);
-            }
-            catch (ValidationException e)
-            {
-                _logger.LogError(e,
-                    "Validation error while processing {queue} with message={message}",
-                    _envConfig.InboundQueueName,
-                    message);
-
-                throw e;
-            }
-
             await SendMessageAsync(_envConfig.InboundQueueName, message);
         }
 
@@ -70,22 +58,14 @@ namespace aiof.messaging.services
         {
             var msgStr = JsonConvert.SerializeObject(message);
 
-            try
-            {
-                var sender = _client.CreateSender(queue);
-                var sbMessage = new ServiceBusMessage(msgStr);
+            var sender = _client.CreateSender(queue);
+            var sbMessage = new ServiceBusMessage(msgStr);
 
-                await sender.SendMessageAsync(sbMessage);
+            await sender.SendMessageAsync(sbMessage);
 
-                _logger.LogInformation("Sent message={message} to queue={queue}",
-                    msgStr,
-                    queue);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error while sending {queue} message", queue);
-                throw e;
-            }
+            _logger.LogInformation("Sent message={message} to queue={queue}",
+                msgStr,
+                queue);
         }
         public async Task SendMessagesAsync(
             string queue,
@@ -93,21 +73,14 @@ namespace aiof.messaging.services
         {
             var msgsStr = JsonConvert.SerializeObject(messages);
 
-            try
-            {
-                var sender = _client.CreateSender(queue);
-                var sbMessages = new ServiceBusMessage(msgsStr);
+            var sender = _client.CreateSender(queue);
+            var sbMessages = new ServiceBusMessage(msgsStr);
 
-                await sender.SendMessageAsync(sbMessages);
+            await sender.SendMessageAsync(sbMessages);
 
-                _logger.LogInformation("Sent message count={messageCount} to queue={queue}",
-                    messages.Count(),
-                    queue);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error while sending {queue} message", queue);
-            }
+            _logger.LogInformation("Sent message count={messageCount} to queue={queue}",
+                messages.Count(),
+                queue);
         }
 
         public async Task SendAsync(IMessage message)
@@ -115,19 +88,14 @@ namespace aiof.messaging.services
             if (message.Type == MessageType.Email)
             {
                 var emailMsg = _mapper.Map<IEmailMessage>(message);
+                var validationResult = await _emailMessageValidator.ValidateAsync(emailMsg);
 
-                try
+                if (!validationResult.IsValid)
                 {
-                    await _emailMessageValidator.ValidateAndThrowAsync(emailMsg);
-                }
-                catch (ValidationException e)
-                {
-                    _logger.LogError(e,
-                        "Validation error while processing {queue} with message={message}",
+                    _logger.LogError("Validation error while processing {queue} with message={message}",
                         _envConfig.InboundQueueName,
                         message);
 
-                    //TODO just dead letter queue on validation error
                     return;
                 }
 
