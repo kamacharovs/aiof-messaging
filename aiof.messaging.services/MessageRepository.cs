@@ -40,15 +40,15 @@ namespace aiof.messaging.services
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
         }
 
-        //TODO figure out how much validation should be actually do
-        //TODO look into creating your own re-processing queue
         public async Task SendInboundMessageAsync(IMessage message)
         {
+            await _messageValidator.ValidateAndThrowAsync(message);
             await SendMessageAsync(_envConfig.InboundQueueName, message);
         }
 
         public async Task SendEmailMessageAsync(IEmailMessage message)
         {
+            await _emailMessageValidator.ValidateAndThrowAsync(message);
             await SendMessageAsync(_envConfig.EmailQueueName, message);
         }
 
@@ -67,37 +67,12 @@ namespace aiof.messaging.services
                 msgStr,
                 queue);
         }
-        public async Task SendMessagesAsync(
-            string queue,
-            IEnumerable<object> messages)
-        {
-            var msgsStr = JsonConvert.SerializeObject(messages);
-
-            var sender = _client.CreateSender(queue);
-            var sbMessages = new ServiceBusMessage(msgsStr);
-
-            await sender.SendMessageAsync(sbMessages);
-
-            _logger.LogInformation("Sent message count={messageCount} to queue={queue}",
-                messages.Count(),
-                queue);
-        }
 
         public async Task SendAsync(IMessage message)
         {
             if (message.Type == MessageType.Email)
             {
                 var emailMsg = _mapper.Map<IEmailMessage>(message);
-                var validationResult = await _emailMessageValidator.ValidateAsync(emailMsg);
-
-                if (!validationResult.IsValid)
-                {
-                    _logger.LogError("Validation error while processing {queue} with message={message}",
-                        _envConfig.InboundQueueName,
-                        message);
-
-                    return;
-                }
 
                 await SendEmailMessageAsync(emailMsg);
             }
