@@ -6,6 +6,7 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.FeatureManagement;
+using Microsoft.EntityFrameworkCore;
 using Azure.Messaging.ServiceBus;
 
 using AutoMapper;
@@ -24,6 +25,8 @@ namespace aiof.messaging.function
         public override void Configure(IFunctionsHostBuilder builder)
         {
             _config = builder.GetContext().Configuration;
+
+            //builder.Services.AddDbContext<AuthContext>(o => o.UseNpgsql(_envConfig.DataPostgreSQL, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
             builder.Services.AddAutoMapper(typeof(AutoMappingProfile).Assembly);
             builder.Services.AddFeatureManagement();

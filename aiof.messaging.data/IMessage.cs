@@ -10,6 +10,7 @@ namespace aiof.messaging.data
         string Type { get; set; }
         int? UserId { get; set; }
         bool? IsTest { get; set; }
+        int? TestConfigId { get; set; }
         DateTime Created { get; set; }
 
         string From { get; set; }

@@ -22,4 +22,9 @@ namespace aiof.messaging.data
         public const string InboundQueueName = nameof(InboundQueueName);
         public const string EmailQueueName = nameof(EmailQueueName);
     }
+
+    public static class Entity
+    {
+        public static string TestConfig = nameof(data.TestConfig).ToSnakeCase();
+    }
 }

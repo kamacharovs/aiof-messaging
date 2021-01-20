@@ -15,6 +15,7 @@ namespace aiof.messaging.data
         public string Type { get; set; }
         public int? UserId { get; set; }
         public bool? IsTest { get; set; }
+        public int? TestConfigId { get; set; }
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         /*
