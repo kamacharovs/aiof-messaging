@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace aiof.messaging.data
 {
-    public class MessagingContext : DbContext
+    public class MessageContext : DbContext
     {
         public virtual DbSet<TestConfig> TestConfigs { get; set; }
 
-        public MessagingContext(DbContextOptions<MessagingContext> options)
+        public MessageContext(DbContextOptions<MessageContext> options)
             : base(options)
         { }
 

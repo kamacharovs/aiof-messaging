@@ -26,7 +26,7 @@ namespace aiof.messaging.function
         {
             _config = builder.GetContext().Configuration;
 
-            //builder.Services.AddDbContext<AuthContext>(o => o.UseNpgsql(_envConfig.DataPostgreSQL, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+            builder.Services.AddDbContext<MessageContext>(o => o.UseNpgsql(_config[Keys.DatabaseConnectionString]));
 
             builder.Services.AddAutoMapper(typeof(AutoMappingProfile).Assembly);
             builder.Services.AddFeatureManagement();
@@ -40,7 +40,8 @@ namespace aiof.messaging.function
             builder.Services
                 .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
                 .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
-                .AddScoped<IMessageRepository, MessageRepository>();
+                .AddScoped<IMessageRepository, MessageRepository>()
+                .AddScoped<ITestConfigRepository, TestConfigRepository>();
         }
     }
 }

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace aiof.messaging.data
 {
-    public class TestConfig
+    public class TestConfig : ITestConfig
     {
         [Required]
         public int Id { get; set; }
