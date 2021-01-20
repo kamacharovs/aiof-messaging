@@ -9,9 +9,9 @@ namespace aiof.messaging.data
         Guid PublicKey { get; set; }
         string Type { get; set; }
         int? UserId { get; set; }
-        bool? IsTest { get; set; }
-        int? TestConfigId { get; set; }
         DateTime Created { get; set; }
+
+        MessageTestConfig TestConfig { get; set; }
 
         string From { get; set; }
         string To { get; set; }

@@ -18,5 +18,6 @@ namespace aiof.messaging.data
 
         string PhoneNumber { get; set; }
         string Email { get; set; }
+        string Subject { get; set; }
     }
 }

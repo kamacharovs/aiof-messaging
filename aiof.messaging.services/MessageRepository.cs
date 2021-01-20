@@ -20,6 +20,7 @@ namespace aiof.messaging.services
         private readonly ILogger<MessageRepository> _logger;
         private readonly IEnvConfiguration _envConfig;
         private readonly IMapper _mapper;
+        private readonly ITestConfigRepository _testConfigRepo;
         private readonly ServiceBusClient _client;
         private readonly AbstractValidator<IMessage> _messageValidator;
         private readonly AbstractValidator<IEmailMessage> _emailMessageValidator;
@@ -28,6 +29,7 @@ namespace aiof.messaging.services
             ILogger<MessageRepository> logger,
             IEnvConfiguration envConfig,
             IMapper mapper,
+            ITestConfigRepository testConfigRepo,
             ServiceBusClient client,
             AbstractValidator<IMessage> messageValidator,
             AbstractValidator<IEmailMessage> emailMessageValidator)
@@ -35,6 +37,7 @@ namespace aiof.messaging.services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _envConfig = envConfig ?? throw new ArgumentNullException(nameof(envConfig));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _testConfigRepo = testConfigRepo ?? throw new ArgumentNullException(nameof(testConfigRepo));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _messageValidator = messageValidator ?? throw new ArgumentNullException(nameof(messageValidator));
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
@@ -72,6 +75,19 @@ namespace aiof.messaging.services
         {
             if (message.Type == MessageType.Email)
             {
+                //Check if it's test
+                if (message.TestConfig?.IsTest == true
+                    && message.TestConfig?.UseConfig == true)
+                {
+                    var id = (int)message.TestConfig.Id;
+                    var testConfig = await _testConfigRepo.GetAsync(id);
+
+                    message.To = testConfig.Email;
+                    message.Subject = testConfig.Subject ?? $"[Message Test Email] Id={id}";
+                    message.Cc = null;
+                    message.Bcc = null;
+                }
+
                 var emailMsg = _mapper.Map<IEmailMessage>(message);
 
                 await SendEmailMessageAsync(emailMsg);

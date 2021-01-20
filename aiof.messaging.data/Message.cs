@@ -14,9 +14,12 @@ namespace aiof.messaging.data
         public Guid PublicKey { get; set; } = Guid.NewGuid();
         public string Type { get; set; }
         public int? UserId { get; set; }
-        public bool? IsTest { get; set; }
-        public int? TestConfigId { get; set; }
         public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        /*
+         * Test
+         */
+        public MessageTestConfig TestConfig { get; set; }
 
         /*
          * Email
@@ -26,5 +29,12 @@ namespace aiof.messaging.data
         public string Subject { get; set; }
         public ICollection<string> Cc { get; set; } = new List<string>();
         public ICollection<string> Bcc { get; set; } = new List<string>();
+    }
+
+    public class MessageTestConfig
+    {
+        public bool? IsTest { get; set; }
+        public bool? UseConfig { get; set; }
+        public int? Id { get; set; }
     }
 }
