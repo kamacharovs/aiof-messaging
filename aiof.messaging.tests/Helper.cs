@@ -21,13 +21,23 @@ namespace aiof.messaging.tests
             => new Dictionary<string, string>()
         {
             { "AzureWebJobsStorage", "UseDevelopmentStorage" },
-            { "ServiceBusConnectionString", "" },
-            { "DatabaseConnectionString", "" },
+            { "ServiceBusConnectionString", "Endpoint=sb://local.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=somefakeone=" },
+            { "DatabaseConnectionString", "Server=127.0.0.1;Port=5433;Database=aiof;User Id=aiof;Password=aiofiscool;" },
             { "EmailQueueName", "email" },
             { "InboundQueueName", "inbound" },
             { "FUNCTIONS_WORKER_RUNTIME", "dotnet" },
             { "FeatureManagement:Email", "true" },
         };
+
+        public static T GetRequiredService<T>()
+        {
+            var provider = Provider();
+
+            provider.GetRequiredService<FakeDataManager>()
+                .UseFakeContext();
+
+            return provider.GetRequiredService<T>();
+        }
 
         private static IServiceProvider Provider()
         {
@@ -62,5 +72,9 @@ namespace aiof.messaging.tests
 
             return services.BuildServiceProvider();
         }
+
+        public const string Category = nameof(Category);
+        public const string UnitTest = nameof(UnitTest);
+        public const string IntegrationTest = nameof(IntegrationTest);
     }
 }
