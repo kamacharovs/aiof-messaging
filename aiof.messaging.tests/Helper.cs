@@ -76,5 +76,8 @@ namespace aiof.messaging.tests
         public const string Category = nameof(Category);
         public const string UnitTest = nameof(UnitTest);
         public const string IntegrationTest = nameof(IntegrationTest);
+
+        public static string NTimes(int n) { return new String('\t', n); }
+        public static string MoreThanOneHundred => NTimes(101);
     }
 }

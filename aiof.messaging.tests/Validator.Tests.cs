@@ -13,10 +13,12 @@ namespace aiof.messaging.tests
     public class ValidatorTests
     {
         private readonly AbstractValidator<IMessage> _messageValidator;
+        private readonly AbstractValidator<IEmailMessage> _emailMessageValidator;
 
         public ValidatorTests()
         {
-            _messageValidator = Helper.GetRequiredService<AbstractValidator<IMessage>>() ?? throw new ArgumentNullException(nameof(AbstractValidator<IMessage>));;
+            _messageValidator = Helper.GetRequiredService<AbstractValidator<IMessage>>() ?? throw new ArgumentNullException(nameof(AbstractValidator<IMessage>));
+            _emailMessageValidator = Helper.GetRequiredService<AbstractValidator<IEmailMessage>>() ?? throw new ArgumentNullException(nameof(AbstractValidator<IEmailMessage>));
         }
 
         [Theory]
@@ -36,7 +38,7 @@ namespace aiof.messaging.tests
         [InlineData("definitelydoesntexit")]
         [InlineData("")]
         [InlineData(null)]
-        public void Message_Validate_Type_DoesntExist(string type)
+        public void Message_Validate_Type_IsInvalid(string type)
         {
             var message = new Message
             {
@@ -44,6 +46,67 @@ namespace aiof.messaging.tests
             };
 
             Assert.False(_messageValidator.Validate(message).IsValid);
+        }
+
+        [Theory]
+        [InlineData("finance@aiof.com", "finance2@aiof.com")]
+        [InlineData("finance2@aiof.com", "finance@aiof.com")]
+        public void MessageEmail_IsSuccessful(string from, string to)
+        {
+            var emailMessage = new EmailMessage
+            {
+                From = from,
+                To = to,
+                Subject = "This is a test subject"
+            };
+
+            Assert.True(_emailMessageValidator.Validate(emailMessage).IsValid);
+        }
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("12")]
+        [InlineData("notanemail")]
+        public void MessageEmail_From_IsInvalid(string from)
+        {
+            var emailMessage = new EmailMessage
+            {
+                From = from,
+                To = "finance2@aiof.com",
+                Subject = "This is a test subject"
+            };
+
+            Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);
+        }
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("12")]
+        [InlineData("notanemail")]
+        public void MessageEmail_To_IsInvalid(string to)
+        {
+            var emailMessage = new EmailMessage
+            {
+                From = "finance@aiof.com",
+                To = to,
+                Subject = "This is a test subject"
+            };
+
+            Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);
+        }
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void MessageEmail_Subject_IsInvalid(string subject)
+        {
+            var emailMessage = new EmailMessage
+            {
+                From = "finance@aiof.com",
+                To = "finance2@aiof.com",
+                Subject = subject
+            };
+
+            Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);
         }
     }
 }

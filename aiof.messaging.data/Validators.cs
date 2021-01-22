@@ -35,12 +35,14 @@ namespace aiof.messaging.data
             RuleFor(x => x.From)
                 .NotNull()
                 .NotEmpty()
-                .Length(3, 100);
+                .Length(3, 100)
+                .EmailAddress();
 
             RuleFor(x => x.To)
                 .NotNull()
                 .NotEmpty()
-                .Length(3, 100);
+                .Length(3, 100)
+                .EmailAddress();
 
             RuleFor(x => x.Subject)
                 .NotNull()
