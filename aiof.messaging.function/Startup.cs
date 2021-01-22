@@ -38,6 +38,7 @@ namespace aiof.messaging.function
                 .AddSingleton<IEnvConfiguration, EnvConfiguration>();
 
             builder.Services
+                .AddScoped<FakeDataManager>()
                 .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
                 .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
                 .AddScoped<IMessageRepository, MessageRepository>()

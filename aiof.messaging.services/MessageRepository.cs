@@ -75,7 +75,6 @@ namespace aiof.messaging.services
         {
             if (message.Type == MessageType.Email)
             {
-                //Check if it's test
                 if (message.TestConfig?.IsTest == true
                     && message.TestConfig?.UseConfig == true)
                 {
