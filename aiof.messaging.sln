@@ -16,6 +16,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aiof.messaging.data", "aiof
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aiof.messaging.services", "aiof.messaging.services\aiof.messaging.services.csproj", "{54EDD075-5CF6-487F-9F25-90ACBE0E5089}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aiof.messaging.tests", "aiof.messaging.tests\aiof.messaging.tests.csproj", "{482BC5EA-F3DC-4CC7-88D0-9B77059DD378}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 		{54EDD075-5CF6-487F-9F25-90ACBE0E5089}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54EDD075-5CF6-487F-9F25-90ACBE0E5089}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54EDD075-5CF6-487F-9F25-90ACBE0E5089}.Release|Any CPU.Build.0 = Release|Any CPU
+		{482BC5EA-F3DC-4CC7-88D0-9B77059DD378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{482BC5EA-F3DC-4CC7-88D0-9B77059DD378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{482BC5EA-F3DC-4CC7-88D0-9B77059DD378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{482BC5EA-F3DC-4CC7-88D0-9B77059DD378}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
