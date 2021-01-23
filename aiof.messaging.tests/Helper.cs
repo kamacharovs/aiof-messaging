@@ -9,6 +9,7 @@ using Azure.Messaging.ServiceBus;
 
 using FluentValidation;
 using AutoMapper;
+using Moq;
 
 using aiof.messaging.data;
 using aiof.messaging.services;
@@ -71,6 +72,22 @@ namespace aiof.messaging.tests
             services.AddMemoryCache();
 
             return services.BuildServiceProvider();
+        }
+
+        public static IMessageRepository GetMockedMessageRepository()
+        {
+            var repo = new Mock<IMessageRepository>();
+
+            repo.Setup(x => x.SendInboundMessageAsync(It.IsAny<IMessage>()))
+                .Verifiable();
+            repo.Setup(x => x.SendEmailMessageAsync(It.IsAny<IEmailMessage>()))
+                .Verifiable();
+            repo.Setup(x => x.SendMessageAsync(It.IsAny<string>(), It.IsAny<object>()))
+                .Verifiable();
+            repo.Setup(x => x.SendAsync(It.IsAny<IMessage>()))
+                .Verifiable();
+
+            return repo.Object;
         }
 
         public const string Category = nameof(Category);
