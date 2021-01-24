@@ -20,6 +20,7 @@ namespace aiof.messaging.data
     {
         public const string ServiceBusConnectionString = nameof(ServiceBusConnectionString);
         public const string DatabaseConnectionString = nameof(DatabaseConnectionString);
+        public const string StorageConnectionString = nameof(StorageConnectionString);
         public const string InboundQueueName = nameof(InboundQueueName);
         public const string EmailQueueName = nameof(EmailQueueName);
     }
