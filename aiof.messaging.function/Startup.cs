@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.FeatureManagement;
 using Microsoft.EntityFrameworkCore;
 using Azure.Messaging.ServiceBus;
+using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Azure.Documents;
 
 using AutoMapper;
 using FluentValidation;
@@ -35,6 +37,7 @@ namespace aiof.messaging.function
                 .AddLogging()
                 .AddSingleton(_config)
                 .AddSingleton(new ServiceBusClient(_config[Keys.ServiceBusConnectionString]))
+                .AddSingleton(CloudStorageAccount.Parse(_config[Keys.StorageConnectionString]))
                 .AddSingleton<IEnvConfiguration, EnvConfiguration>();
 
             builder.Services
@@ -42,7 +45,8 @@ namespace aiof.messaging.function
                 .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
                 .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
                 .AddScoped<IMessageRepository, MessageRepository>()
-                .AddScoped<ITestConfigRepository, TestConfigRepository>();
+                .AddScoped<ITestConfigRepository, TestConfigRepository>()
+                .AddScoped<ITableRepository, TableRepository>();
         }
     }
 }
