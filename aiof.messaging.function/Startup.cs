@@ -7,9 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.FeatureManagement;
 using Microsoft.EntityFrameworkCore;
-using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
+using Azure.Messaging.ServiceBus;
 
 using AutoMapper;
 using FluentValidation;
