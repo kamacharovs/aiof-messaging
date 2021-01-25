@@ -25,28 +25,28 @@ namespace aiof.messaging.services
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task<MessageEntity> InsertOrMergeAsync(
+        public async Task<T> InsertOrMergeAsync<T>(
             string tableName,
-            MessageEntity messageEntity)
+            T entity) where T : TableEntity
         {
-            if (messageEntity == null)
+            if (entity == null)
             {
-                throw new ArgumentNullException(nameof(messageEntity));
+                throw new ArgumentNullException(nameof(entity));
             }
 
             try
             {
                 var table = _client.GetTableReference(tableName);
-                var insertOrMergeOperation = TableOperation.InsertOrMerge(messageEntity);
+                var insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
                 var result = await table.ExecuteAsync(insertOrMergeOperation);
 
-                return result.Result as MessageEntity;
+                return result.Result as T;
             }
             catch (StorageException e)
             {
                 _logger.LogError(e, "Error while inserting {entityName}. Entity={entity}",
-                    nameof(MessageEntity),
-                    JsonConvert.SerializeObject(messageEntity));
+                    nameof(T),
+                    JsonConvert.SerializeObject(entity));
 
                 throw;
             }

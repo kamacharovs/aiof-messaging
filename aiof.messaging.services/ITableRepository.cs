@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Azure.Cosmos.Table;
+
 using aiof.messaging.data;
 
 namespace aiof.messaging.services
 {
     public interface ITableRepository
     {
-        Task<MessageEntity> InsertOrMergeAsync(
+        Task<T> InsertOrMergeAsync<T>(
             string tableName,
-            MessageEntity messageEntity);
+            T entity) where T : TableEntity;
     }
 }

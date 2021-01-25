@@ -31,6 +31,11 @@ namespace aiof.messaging.data
         public string Subject { get; set; }
         public ICollection<string> Cc { get; set; } = new List<string>();
         public ICollection<string> Bcc { get; set; } = new List<string>();
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 
     /// <summary>
