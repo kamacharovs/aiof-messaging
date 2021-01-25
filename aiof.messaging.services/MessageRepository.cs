@@ -21,6 +21,7 @@ namespace aiof.messaging.services
         private readonly IEnvConfiguration _envConfig;
         private readonly IMapper _mapper;
         private readonly ITestConfigRepository _testConfigRepo;
+        private readonly ITableRepository _tableRepo;
         private readonly ServiceBusClient _client;
         private readonly AbstractValidator<IMessage> _messageValidator;
         private readonly AbstractValidator<IEmailMessage> _emailMessageValidator;
@@ -30,6 +31,7 @@ namespace aiof.messaging.services
             IEnvConfiguration envConfig,
             IMapper mapper,
             ITestConfigRepository testConfigRepo,
+            ITableRepository tableRepo,
             ServiceBusClient client,
             AbstractValidator<IMessage> messageValidator,
             AbstractValidator<IEmailMessage> emailMessageValidator)
@@ -38,6 +40,7 @@ namespace aiof.messaging.services
             _envConfig = envConfig ?? throw new ArgumentNullException(nameof(envConfig));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _testConfigRepo = testConfigRepo ?? throw new ArgumentNullException(nameof(testConfigRepo));
+            _tableRepo = tableRepo ?? throw new ArgumentNullException(nameof(tableRepo));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _messageValidator = messageValidator ?? throw new ArgumentNullException(nameof(messageValidator));
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
@@ -89,6 +92,14 @@ namespace aiof.messaging.services
 
                 var emailMsg = _mapper.Map<IEmailMessage>(message);
 
+                /*
+                 * Log EmailMessage to table
+                 */
+                await _tableRepo.LogAsync(message, emailMsg);
+
+                /*
+                 * Send email message to email queue
+                 */
                 await SendEmailMessageAsync(emailMsg);
             }
         }

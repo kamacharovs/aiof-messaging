@@ -31,6 +31,11 @@ namespace aiof.messaging.data
         public string Subject { get; set; }
         public ICollection<string> Cc { get; set; } = new List<string>();
         public ICollection<string> Bcc { get; set; } = new List<string>();
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 
     /// <summary>
@@ -46,19 +51,22 @@ namespace aiof.messaging.data
     /// <summary>
     /// Message entity used to manipulate data in Azure table storage
     /// </summary>
-    public class MessageInboundEntity : TableEntity
+    public class MessageEntity : TableEntity
     {
-        public string ContentDataRaw { get; set; }
-        public string ContentData { get; set; }
-        public string Description { get; set; }
+        public Guid PublicKey { get; set; }
+        public string Type { get; set; }
+        public int? UserId { get; set; }
+        public DateTime Created { get; set; }
 
 
-        public MessageInboundEntity()
+        public MessageEntity()
         { }
 
-        public MessageInboundEntity(string id)
+        public MessageEntity(
+            string queueName, 
+            string id)
         {
-            PartitionKey = Keys.InboundQueueName;
+            PartitionKey = queueName;
             RowKey = id;
         }
     }

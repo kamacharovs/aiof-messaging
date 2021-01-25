@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Azure.Cosmos.Table;
 using Azure.Messaging.ServiceBus;
 
 using FluentValidation;
@@ -24,7 +25,9 @@ namespace aiof.messaging.tests
             { "AzureWebJobsStorage", "UseDevelopmentStorage" },
             { "ServiceBusConnectionString", "Endpoint=sb://local.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=somefakeone=" },
             { "DatabaseConnectionString", "Server=127.0.0.1;Port=5433;Database=aiof;User Id=aiof;Password=aiofiscool;" },
+            { "StorageConnectionString", "DefaultEndpointsProtocol=https;AccountName=local;AccountKey=acckey==;EndpointSuffix=core.windows.net" },
             { "EmailQueueName", "email" },
+            { "EmailTableName", "email" },
             { "InboundQueueName", "inbound" },
             { "FUNCTIONS_WORKER_RUNTIME", "dotnet" },
             { "FeatureManagement:Email", "true" },
@@ -56,6 +59,7 @@ namespace aiof.messaging.tests
 
             services
                 .AddSingleton(new ServiceBusClient(ConfigurationDict[Keys.ServiceBusConnectionString]))
+                .AddSingleton(CloudStorageAccount.Parse(ConfigurationDict[Keys.StorageConnectionString]).CreateCloudTableClient(new TableClientConfiguration()))
                 .AddSingleton<IEnvConfiguration, EnvConfiguration>();
 
             services.AddSingleton(new MapperConfiguration(x => { x.AddProfile(new AutoMappingProfile()); }).CreateMapper());
@@ -65,7 +69,8 @@ namespace aiof.messaging.tests
                 .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
                 .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
                 .AddScoped<IMessageRepository, MessageRepository>()
-                .AddScoped<ITestConfigRepository, TestConfigRepository>();
+                .AddScoped<ITestConfigRepository, TestConfigRepository>()
+                .AddScoped<ITableRepository, TableRepository>();
 
             services.AddLogging();
             services.AddFeatureManagement();
