@@ -22,8 +22,7 @@ namespace aiof.messaging.data
                 .ForMember(x => x.To, o => o.MapFrom(s => s.To))
                 .ForMember(x => x.Subject, o => o.MapFrom(s => s.Subject))
                 .ForMember(x => x.Cc, o => o.MapFrom(s => s.Cc))
-                .ForMember(x => x.Bcc, o => o.MapFrom(s => s.Bcc))
-                .ForMember(x => x.Raw, o => o.MapFrom(s => s.ToString()));
+                .ForMember(x => x.Bcc, o => o.MapFrom(s => s.Bcc));
         }
     }
 }
