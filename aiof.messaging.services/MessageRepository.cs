@@ -92,6 +92,14 @@ namespace aiof.messaging.services
 
                 var emailMsg = _mapper.Map<IEmailMessage>(message);
 
+                /*
+                 * Log EmailMessage to table
+                 */
+                await _tableRepo.LogAsync(message, emailMsg);
+
+                /*
+                 * Send email message to email queue
+                 */
                 await SendEmailMessageAsync(emailMsg);
             }
         }

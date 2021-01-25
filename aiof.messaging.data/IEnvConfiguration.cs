@@ -8,8 +8,9 @@ namespace aiof.messaging.data
     public interface IEnvConfiguration
     {
         string ServiceBusConnectionString { get; }
-        string InboundQueueName { get; }
         string EmailQueueName { get; }
+        string EmailTableName { get; }
+        string InboundQueueName { get; }
 
         Task<bool> IsEnabledAsync(FeatureFlags featureFlag);
     }

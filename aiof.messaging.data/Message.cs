@@ -62,7 +62,9 @@ namespace aiof.messaging.data
         public MessageEntity()
         { }
 
-        public MessageEntity(string queueName, string id)
+        public MessageEntity(
+            string queueName, 
+            string id)
         {
             PartitionKey = queueName;
             RowKey = id;

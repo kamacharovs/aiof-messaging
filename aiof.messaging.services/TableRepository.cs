@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Cosmos.Table;
 
 using Newtonsoft.Json;
+using AutoMapper;
 
 using aiof.messaging.data;
 
@@ -15,14 +16,33 @@ namespace aiof.messaging.services
     public class TableRepository : ITableRepository
     {
         private readonly ILogger<TableRepository> _logger;
+        private readonly IMapper _mapper;
+        private readonly IEnvConfiguration _envConfig;
         private readonly CloudTableClient _client;
 
         public TableRepository(
             ILogger<TableRepository> logger,
+            IMapper mapper,
+            IEnvConfiguration envConfig,
             CloudTableClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _envConfig = envConfig ?? throw new ArgumentNullException(nameof(envConfig));
             _client = client ?? throw new ArgumentNullException(nameof(client));
+        }
+
+        public async Task LogAsync(
+            IMessage message,
+            IEmailMessage emailMessage)
+        {
+            var emailMsgEntity = _mapper.Map<EmailMessageEntity>(emailMessage);
+
+            emailMsgEntity.PartitionKey = _envConfig.EmailQueueName;
+            emailMsgEntity.RowKey = message.PublicKey.ToString();
+            emailMsgEntity.Raw = JsonConvert.SerializeObject(emailMessage);
+
+            await this.InsertOrMergeAsync(_envConfig.EmailTableName, emailMsgEntity);
         }
 
         public async Task<T> InsertOrMergeAsync<T>(

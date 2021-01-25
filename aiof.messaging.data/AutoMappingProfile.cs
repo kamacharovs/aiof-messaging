@@ -16,6 +16,14 @@ namespace aiof.messaging.data
                 .ForMember(x => x.Subject, o => o.MapFrom(s => s.Subject))
                 .ForMember(x => x.Cc, o => o.MapFrom(s => string.Join(",", s.Cc)))
                 .ForMember(x => x.Bcc, o => o.MapFrom(s => string.Join(",", s.Bcc)));
+
+            CreateMap<IEmailMessage, EmailMessageEntity>()
+                .ForMember(x => x.From, o => o.MapFrom(s => s.From))
+                .ForMember(x => x.To, o => o.MapFrom(s => s.To))
+                .ForMember(x => x.Subject, o => o.MapFrom(s => s.Subject))
+                .ForMember(x => x.Cc, o => o.MapFrom(s => s.Cc))
+                .ForMember(x => x.Bcc, o => o.MapFrom(s => s.Bcc))
+                .ForMember(x => x.Raw, o => o.MapFrom(s => s.ToString()));
         }
     }
 }

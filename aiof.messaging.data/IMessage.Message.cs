@@ -11,5 +11,7 @@ namespace aiof.messaging.data
         string From { get; set; }
         string Subject { get; set; }
         string To { get; set; }
+
+        string ToString();
     }
 }
