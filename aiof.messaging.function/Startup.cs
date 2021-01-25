@@ -36,7 +36,7 @@ namespace aiof.messaging.function
                 .AddLogging()
                 .AddSingleton(_config)
                 .AddSingleton(new ServiceBusClient(_config[Keys.ServiceBusConnectionString]))
-                .AddSingleton(CloudStorageAccount.Parse(_config[Keys.StorageConnectionString]))
+                .AddSingleton(CloudStorageAccount.Parse(_config[Keys.StorageConnectionString]).CreateCloudTableClient(new TableClientConfiguration()))
                 .AddSingleton<IEnvConfiguration, EnvConfiguration>();
 
             builder.Services

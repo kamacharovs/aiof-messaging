@@ -27,6 +27,7 @@ namespace aiof.messaging.tests
             { "DatabaseConnectionString", "Server=127.0.0.1;Port=5433;Database=aiof;User Id=aiof;Password=aiofiscool;" },
             { "StorageConnectionString", "DefaultEndpointsProtocol=https;AccountName=local;AccountKey=acckey==;EndpointSuffix=core.windows.net" },
             { "EmailQueueName", "email" },
+            { "EmailTableName", "email" },
             { "InboundQueueName", "inbound" },
             { "FUNCTIONS_WORKER_RUNTIME", "dotnet" },
             { "FeatureManagement:Email", "true" },
@@ -58,7 +59,7 @@ namespace aiof.messaging.tests
 
             services
                 .AddSingleton(new ServiceBusClient(ConfigurationDict[Keys.ServiceBusConnectionString]))
-                .AddSingleton(CloudStorageAccount.Parse(ConfigurationDict[Keys.StorageConnectionString]))
+                .AddSingleton(CloudStorageAccount.Parse(ConfigurationDict[Keys.StorageConnectionString]).CreateCloudTableClient(new TableClientConfiguration()))
                 .AddSingleton<IEnvConfiguration, EnvConfiguration>();
 
             services.AddSingleton(new MapperConfiguration(x => { x.AddProfile(new AutoMappingProfile()); }).CreateMapper());
