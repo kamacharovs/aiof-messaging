@@ -36,6 +36,10 @@ namespace aiof.messaging.services
         public async Task LogAsync(IEmailMessage message)
         {
             var emailMessageEntity = _mapper.Map<EmailMessageEntity>(message);
+
+            emailMessageEntity.RowKey = message.PublicKey.ToString();
+            emailMessageEntity.PartitionKey = _envConfig.EmailQueueName;
+
             await InsertOrMergeAsync(_envConfig.EmailTableName, emailMessageEntity);
         }
 
