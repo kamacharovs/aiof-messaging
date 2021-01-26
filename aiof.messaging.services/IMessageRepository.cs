@@ -10,10 +10,13 @@ namespace aiof.messaging.services
     public interface IMessageRepository
     {
         Task SendInboundMessageAsync(IMessage message);
-        Task SendEmailMessageAsync(IEmailMessage message);
-        Task SendMessageAsync(
-            string queue,
-            object message);
+
+        Task SendMessageAsync<T>(T message)
+            where T : IMessage;
+
+        Task SendEmailMessageAsync<T>(T message)
+            where T : IEmailMessage;
+
         Task SendAsync(IMessage message);
     }
 }

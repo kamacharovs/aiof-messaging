@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Linq;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 using Azure.Messaging.ServiceBus;
 
 using Newtonsoft.Json;
@@ -49,29 +48,45 @@ namespace aiof.messaging.services
         public async Task SendInboundMessageAsync(IMessage message)
         {
             await _messageValidator.ValidateAndThrowAsync(message);
-            await SendMessageAsync(_envConfig.InboundQueueName, message);
+            await SendMessageAsync(message);
         }
 
-        public async Task SendEmailMessageAsync(IEmailMessage message)
+        public async Task SendMessageAsync<T>(T message)
+            where T : IMessage
         {
-            await _emailMessageValidator.ValidateAndThrowAsync(message);
-            await SendMessageAsync(_envConfig.EmailQueueName, message);
-        }
+            var messageStr = JsonConvert.SerializeObject(message);
+            var queueName = _envConfig.InboundQueueName;
+            var sender = _client.CreateSender(queueName);
+            var serviceBusMessage = new ServiceBusMessage(messageStr);
 
-        public async Task SendMessageAsync(
-            string queue,
-            object message)
-        {
-            var msgStr = JsonConvert.SerializeObject(message);
-
-            var sender = _client.CreateSender(queue);
-            var sbMessage = new ServiceBusMessage(msgStr);
-
-            await sender.SendMessageAsync(sbMessage);
+            await sender.SendMessageAsync(serviceBusMessage);
 
             _logger.LogInformation("Sent message={message} to queue={queue}",
-                msgStr,
-                queue);
+                messageStr,
+                queueName);
+        }
+
+        public async Task SendEmailMessageAsync<T>(T message)
+            where T : IEmailMessage
+        {
+            var emailMessageStr = JsonConvert.SerializeObject(message);
+            var queueName = _envConfig.EmailQueueName;
+            var sender = _client.CreateSender(queueName);
+            var serviceBusMessage = new ServiceBusMessage(emailMessageStr);
+
+            await sender.SendMessageAsync(serviceBusMessage);
+
+            /*
+             * Log EmailMessage to table storage
+             */
+            await _tableRepo.LogAsync(message);
+
+            /*
+             * Log EmailMessage to logger
+             */
+            _logger.LogInformation("Sent message={message} to queue={queue}",
+                emailMessageStr,
+                queueName);
         }
 
         public async Task SendAsync(IMessage message)
@@ -90,17 +105,13 @@ namespace aiof.messaging.services
                     message.Bcc = null;
                 }
 
-                var emailMsg = _mapper.Map<IEmailMessage>(message);
-
-                /*
-                 * Log EmailMessage to table
-                 */
-                await _tableRepo.LogAsync(message, emailMsg);
+                var emailMessage = _mapper.Map<IEmailMessage>(message);
 
                 /*
                  * Send email message to email queue
                  */
-                await SendEmailMessageAsync(emailMsg);
+                await _emailMessageValidator.ValidateAndThrowAsync(emailMessage);
+                await SendEmailMessageAsync(emailMessage);
             }
         }
     }

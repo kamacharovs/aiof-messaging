@@ -13,6 +13,7 @@ namespace aiof.messaging.data
     /// </summary>
     public class EmailMessage : IEmailMessage
     {
+        public Guid PublicKey { get; set; }
         public string From { get; set; }
         public string To { get; set; }
         public string Subject { get; set; }

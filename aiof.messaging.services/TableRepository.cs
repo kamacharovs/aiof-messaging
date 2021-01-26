@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Cosmos.Table;
+using Azure.Messaging.ServiceBus;
 
 using Newtonsoft.Json;
 using AutoMapper;
@@ -32,17 +33,10 @@ namespace aiof.messaging.services
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task LogAsync(
-            IMessage message,
-            IEmailMessage emailMessage)
+        public async Task LogAsync(IEmailMessage message)
         {
-            var emailMsgEntity = _mapper.Map<EmailMessageEntity>(emailMessage);
-
-            emailMsgEntity.PartitionKey = _envConfig.EmailQueueName;
-            emailMsgEntity.RowKey = message.PublicKey.ToString();
-            emailMsgEntity.Raw = JsonConvert.SerializeObject(emailMessage);
-
-            await this.InsertOrMergeAsync(_envConfig.EmailTableName, emailMsgEntity);
+            var emailMessageEntity = _mapper.Map<EmailMessageEntity>(message);
+            await InsertOrMergeAsync(_envConfig.EmailTableName, emailMessageEntity);
         }
 
         public async Task<T> InsertOrMergeAsync<T>(
