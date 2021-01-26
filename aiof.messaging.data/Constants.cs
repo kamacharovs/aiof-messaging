@@ -24,6 +24,7 @@ namespace aiof.messaging.data
         public const string EmailQueueName = nameof(EmailQueueName);
         public const string EmailTableName = nameof(EmailTableName);
         public const string InboundQueueName = nameof(InboundQueueName);
+        public const string InboundTableName = nameof(InboundTableName);
     }
 
     public static class Entity
