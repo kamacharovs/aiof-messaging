@@ -47,6 +47,7 @@ namespace aiof.messaging.services
 
         public async Task SendInboundMessageAsync(IMessage message)
         {
+            await _tableRepo.LogAsync(message);
             await _messageValidator.ValidateAndThrowAsync(message);
             await SendMessageAsync(message);
         }
@@ -74,16 +75,10 @@ namespace aiof.messaging.services
             var sender = _client.CreateSender(queueName);
             var serviceBusMessage = new ServiceBusMessage(emailMessageStr);
 
-            await sender.SendMessageAsync(serviceBusMessage);
-
-            /*
-             * Log EmailMessage to table storage
-             */
             await _tableRepo.LogAsync(message);
 
-            /*
-             * Log EmailMessage to logger
-             */
+            await sender.SendMessageAsync(serviceBusMessage);
+
             _logger.LogInformation("Sent message={message} to queue={queue}",
                 emailMessageStr,
                 queueName);

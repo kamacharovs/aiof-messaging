@@ -29,6 +29,7 @@ namespace aiof.messaging.tests
             { "EmailQueueName", "email" },
             { "EmailTableName", "email" },
             { "InboundQueueName", "inbound" },
+            { "InboundTableName", "inbound" },
             { "FUNCTIONS_WORKER_RUNTIME", "dotnet" },
             { "FeatureManagement:Email", "true" },
         };

@@ -40,10 +40,20 @@ namespace aiof.messaging.services
             emailMessageEntity.RowKey = message.PublicKey.ToString();
             emailMessageEntity.PartitionKey = _envConfig.EmailQueueName;
 
-            await InsertOrMergeAsync(_envConfig.EmailTableName, emailMessageEntity);
+            await InsertAsync(_envConfig.EmailTableName, emailMessageEntity);
         }
 
-        public async Task<T> InsertOrMergeAsync<T>(
+        public async Task LogAsync(IMessage message)
+        {
+            var messageEntity = _mapper.Map<MessageEntity>(message);
+
+            messageEntity.RowKey = message.PublicKey.ToString();
+            messageEntity.PartitionKey = message.Type.ToLower();
+
+            await InsertAsync(_envConfig.InboundTableName, messageEntity);
+        }
+
+        public async Task<T> InsertAsync<T>(
             string tableName,
             T entity) where T : TableEntity
         {
@@ -55,8 +65,8 @@ namespace aiof.messaging.services
             try
             {
                 var table = _client.GetTableReference(tableName);
-                var insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
-                var result = await table.ExecuteAsync(insertOrMergeOperation);
+                var insertOperation = TableOperation.Insert(entity);
+                var result = await table.ExecuteAsync(insertOperation);
 
                 return result.Result as T;
             }

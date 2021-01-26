@@ -11,9 +11,10 @@ namespace aiof.messaging.services
 {
     public interface ITableRepository
     {
+        Task LogAsync(IMessage message);
         Task LogAsync(IEmailMessage message);
 
-        Task<T> InsertOrMergeAsync<T>(
+        Task<T> InsertAsync<T>(
             string tableName,
             T entity) where T : TableEntity;
     }

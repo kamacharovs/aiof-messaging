@@ -41,9 +41,11 @@ namespace aiof.messaging.data
         public EmailMessageEntity()
         { }
 
-        public EmailMessageEntity(string id)
+        public EmailMessageEntity(
+            string queueName,
+            string id)
         {
-            PartitionKey = Keys.EmailQueueName;
+            PartitionKey = queueName;
             RowKey = id;
         }
     }

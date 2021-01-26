@@ -26,6 +26,14 @@ namespace aiof.messaging.data
                 .ForMember(x => x.Cc, o => o.MapFrom(s => s.Cc))
                 .ForMember(x => x.Bcc, o => o.MapFrom(s => s.Bcc))
                 .ForMember(x => x.Raw, o => o.MapFrom(s => JsonConvert.SerializeObject(s)));
+
+            CreateMap<IMessage, MessageEntity>()
+                .ForMember(x => x.PublicKey, o => o.MapFrom(s => s.PublicKey))
+                .ForMember(x => x.Type, o => o.MapFrom(s => s.Type))
+                .ForMember(x => x.UserId, o => o.MapFrom(s => s.UserId))
+                .ForMember(x => x.Created, o => o.MapFrom(s => s.Created))
+                .ForMember(x => x.Raw, o => o.MapFrom(s => JsonConvert.SerializeObject(s)))
+                .ForAllOtherMembers(x => x.Ignore());
         }
     }
 }
