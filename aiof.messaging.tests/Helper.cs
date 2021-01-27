@@ -69,9 +69,9 @@ namespace aiof.messaging.tests
                 .AddScoped<FakeDataManager>()
                 .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
                 .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
-                .AddScoped<IMessageRepository, MessageRepository>()
                 .AddScoped<ITestConfigRepository, TestConfigRepository>()
-                .AddScoped<ITableRepository, TableRepository>();
+                .AddScoped(x => GetMockedTableRepository())
+                .AddScoped(x => GetMockedMessageRepository());
 
             services.AddLogging();
             services.AddFeatureManagement();
@@ -81,6 +81,10 @@ namespace aiof.messaging.tests
         }
 
         public static IMessageRepository GetMockedMessageRepository()
+        {
+            return GetMockMessageRepository().Object;
+        }
+        public static Mock<IMessageRepository> GetMockMessageRepository()
         {
             var repo = new Mock<IMessageRepository>();
 
@@ -93,9 +97,14 @@ namespace aiof.messaging.tests
             repo.Setup(x => x.SendAsync(It.IsAny<IMessage>()))
                 .Verifiable();
 
-            return repo.Object;
+            return repo;
         }
+
         public static ITableRepository GetMockedTableRepository()
+        {
+            return GetMockTableRepository().Object;
+        }
+        public static Mock<ITableRepository> GetMockTableRepository()
         {
             var repo = new Mock<ITableRepository>();
 
@@ -106,7 +115,7 @@ namespace aiof.messaging.tests
             repo.Setup(x => x.InsertAsync(It.IsAny<string>(), It.IsAny<TableEntity>()))
                 .Verifiable();
 
-            return repo.Object;
+            return repo;
         }
 
         public const string Category = nameof(Category);
