@@ -37,6 +37,7 @@ namespace aiof.messaging.tests
             var emailMessage = _mapper.Map<IEmailMessage>(message);
 
             Assert.NotNull(emailMessage);
+            Assert.Equal(message.PublicKey, emailMessage.PublicKey);
             Assert.Equal(from, emailMessage.From);
             Assert.Equal(to, emailMessage.To);
             Assert.Equal(subject, emailMessage.Subject);

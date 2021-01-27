@@ -95,6 +95,19 @@ namespace aiof.messaging.tests
 
             return repo.Object;
         }
+        public static ITableRepository GetMockedTableRepository()
+        {
+            var repo = new Mock<ITableRepository>();
+
+            repo.Setup(x => x.LogAsync(It.IsAny<IMessage>()))
+                .Verifiable();
+            repo.Setup(x => x.LogAsync(It.IsAny<IEmailMessage>()))
+                .Verifiable();
+            repo.Setup(x => x.InsertAsync(It.IsAny<string>(), It.IsAny<TableEntity>()))
+                .Verifiable();
+
+            return repo.Object;
+        }
 
         public const string Category = nameof(Category);
         public const string UnitTest = nameof(UnitTest);
