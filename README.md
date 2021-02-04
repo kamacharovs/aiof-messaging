@@ -32,3 +32,27 @@ The main functionality is sending a message based on a message type - email, sms
     ]
 }
 ```
+
+## How to run it
+
+How to run the messaging microservice locally and through Docker
+
+### Docker
+
+Build it
+
+```ps
+docker build -t aiof-messaging .
+```
+
+Run it
+
+```ps
+docker run -it --rm -e ASPNETCORE_ENVIRONMENT='Development' -p 8003:80 aiof-messaging
+```
+
+(Optional) Clean up `none` images
+
+```ps
+docker rmi $(docker images -f "dangling=true" -q)
+```
