@@ -14,6 +14,7 @@ namespace aiof.messaging.data
         string EmailTableName { get; }
         string InboundQueueName { get; }
         string InboundTableName { get; }
+        string DeadLetterTableName { get; }
 
         Task<bool> IsEnabledAsync(FeatureFlags featureFlag);
     }

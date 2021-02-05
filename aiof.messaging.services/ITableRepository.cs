@@ -14,6 +14,10 @@ namespace aiof.messaging.services
         Task LogAsync(IMessage message);
         Task LogAsync(IEmailMessage message);
 
+        Task LogDeadLetterAsync(
+            string queueName,
+            IMessage message);
+
         Task<T> InsertAsync<T>(
             string tableName,
             T entity) where T : TableEntity;

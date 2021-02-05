@@ -43,9 +43,9 @@ namespace aiof.messaging.data
     /// </summary>
     public class MessageTestConfig
     {
-        public bool? IsTest { get; set; }
-        public bool? UseConfig { get; set; }
-        public int? Id { get; set; }
+        public bool? IsTest { get; set; } = true;
+        public bool? UseConfig { get; set; } = false;
+        public int? Id { get; set; } = null;
     }
 
     /// <summary>
@@ -57,6 +57,7 @@ namespace aiof.messaging.data
         public string Type { get; set; }
         public int? UserId { get; set; }
         public DateTime Created { get; set; }
+
         public string Raw { get; set; }
 
 
@@ -70,5 +71,22 @@ namespace aiof.messaging.data
             PartitionKey = type;
             RowKey = id;
         }
+    }
+
+    /// <summary>
+    /// Message dead letter entity used to manipulate data in Azure table storage
+    /// </summary>
+    public class MessageDeadLetterEntity : TableEntity
+    {
+        public Guid PublicKey { get; set; }
+        public string Type { get; set; }
+        public int? UserId { get; set; }
+        public DateTime Created { get; set; }
+
+        public bool IsTest { get; set; }
+        public string Raw { get; set; }
+
+        public MessageDeadLetterEntity()
+        { }
     }
 }

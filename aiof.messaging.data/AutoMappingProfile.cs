@@ -27,6 +27,16 @@ namespace aiof.messaging.data
                 .ForMember(x => x.Raw, o => o.MapFrom(s => JsonConvert.SerializeObject(s)))
                 .ForAllOtherMembers(x => x.Ignore());
 
+            CreateMap<IMessage, MessageDeadLetterEntity>()
+                .ForMember(x => x.RowKey, o => o.MapFrom(s => s.PublicKey.ToString().ToLowerInvariant()))
+                .ForMember(x => x.PublicKey, o => o.MapFrom(s => s.PublicKey))
+                .ForMember(x => x.Type, o => o.MapFrom(s => s.Type))
+                .ForMember(x => x.UserId, o => o.MapFrom(s => s.UserId))
+                .ForMember(x => x.Created, o => o.MapFrom(s => s.Created))
+                .ForMember(x => x.IsTest, o => o.MapFrom(s => s.TestConfig != null))
+                .ForMember(x => x.Raw, o => o.MapFrom(s => JsonConvert.SerializeObject(s)))
+                .ForAllOtherMembers(x => x.Ignore());
+
             CreateMap<IEmailMessage, EmailMessageEntity>()
                 .ForMember(x => x.From, o => o.MapFrom(s => s.From))
                 .ForMember(x => x.To, o => o.MapFrom(s => s.To))

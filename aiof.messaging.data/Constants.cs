@@ -33,7 +33,7 @@ namespace aiof.messaging.data
         public const string EmailTableName = nameof(EmailTableName);
         public const string InboundQueueName = nameof(InboundQueueName);
         public const string InboundTableName = nameof(InboundTableName);
-        public const string DeadLetterQueueName = nameof(DeadLetterQueueName);
+        public const string DeadLetterTableName = nameof(DeadLetterTableName);
     }
 
     public static class Entity

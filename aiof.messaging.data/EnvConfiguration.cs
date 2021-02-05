@@ -28,6 +28,7 @@ namespace aiof.messaging.data
         public string EmailTableName => _config[Keys.EmailTableName] ?? throw new KeyNotFoundException();
         public string InboundQueueName => _config[Keys.InboundQueueName] ?? throw new KeyNotFoundException();
         public string InboundTableName => _config[Keys.InboundTableName] ?? throw new KeyNotFoundException();
+        public string DeadLetterTableName => _config[Keys.DeadLetterTableName] ?? throw new KeyNotFoundException();
 
         public async Task<bool> IsEnabledAsync(FeatureFlags featureFlag)
         {

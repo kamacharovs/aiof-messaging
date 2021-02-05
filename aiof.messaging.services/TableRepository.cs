@@ -53,6 +53,17 @@ namespace aiof.messaging.services
             await InsertAsync(_envConfig.InboundTableName, messageEntity);
         }
 
+        public async Task LogDeadLetterAsync(
+            string queueName,
+            IMessage message)
+        {
+            var messageDeadLetterEntity = _mapper.Map<MessageDeadLetterEntity>(message);
+
+            messageDeadLetterEntity.PartitionKey = queueName.ToLowerInvariant();
+
+            await InsertAsync(_envConfig.DeadLetterTableName, messageDeadLetterEntity);
+        }
+
         public async Task<T> InsertAsync<T>(
             string tableName,
             T entity) where T : TableEntity
