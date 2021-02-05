@@ -6,11 +6,12 @@ namespace aiof.messaging.data
 {
     public interface IEmailMessage
     {
-        string Bcc { get; set; }
-        string Cc { get; set; }
+        Guid PublicKey { get; set; }
         string From { get; set; }
-        string Subject { get; set; }
         string To { get; set; }
+        string Subject { get; set; }
+        string Cc { get; set; }
+        string Bcc { get; set; }
 
         string ToString();
     }

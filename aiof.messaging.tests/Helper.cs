@@ -29,6 +29,7 @@ namespace aiof.messaging.tests
             { "EmailQueueName", "email" },
             { "EmailTableName", "email" },
             { "InboundQueueName", "inbound" },
+            { "InboundTableName", "inbound" },
             { "FUNCTIONS_WORKER_RUNTIME", "dotnet" },
             { "FeatureManagement:Email", "true" },
         };
@@ -68,9 +69,9 @@ namespace aiof.messaging.tests
                 .AddScoped<FakeDataManager>()
                 .AddScoped<AbstractValidator<IMessage>, MessageValidator>()
                 .AddScoped<AbstractValidator<IEmailMessage>, EmailMessageValidator>()
-                .AddScoped<IMessageRepository, MessageRepository>()
                 .AddScoped<ITestConfigRepository, TestConfigRepository>()
-                .AddScoped<ITableRepository, TableRepository>();
+                .AddScoped(x => GetMockedTableRepository())
+                .AddScoped(x => GetMockedMessageRepository());
 
             services.AddLogging();
             services.AddFeatureManagement();
@@ -81,16 +82,36 @@ namespace aiof.messaging.tests
 
         public static IMessageRepository GetMockedMessageRepository()
         {
+            return GetMockMessageRepository().Object;
+        }
+        public static Mock<IMessageRepository> GetMockMessageRepository()
+        {
             var repo = new Mock<IMessageRepository>();
 
             repo.Setup(x => x.SendEmailMessageAsync(It.IsAny<IEmailMessage>()))
                 .Verifiable();
-            repo.Setup(x => x.SendMessageAsync(It.IsAny<string>(), It.IsAny<object>()))
-                .Verifiable();
             repo.Setup(x => x.SendAsync(It.IsAny<IMessage>()))
                 .Verifiable();
 
-            return repo.Object;
+            return repo;
+        }
+
+        public static ITableRepository GetMockedTableRepository()
+        {
+            return GetMockTableRepository().Object;
+        }
+        public static Mock<ITableRepository> GetMockTableRepository()
+        {
+            var repo = new Mock<ITableRepository>();
+
+            repo.Setup(x => x.LogAsync(It.IsAny<IMessage>()))
+                .Verifiable();
+            repo.Setup(x => x.LogAsync(It.IsAny<IEmailMessage>()))
+                .Verifiable();
+            repo.Setup(x => x.InsertAsync(It.IsAny<string>(), It.IsAny<TableEntity>()))
+                .Verifiable();
+
+            return repo;
         }
 
         public const string Category = nameof(Category);
