@@ -64,10 +64,10 @@ namespace aiof.messaging.data
         { }
 
         public MessageEntity(
-            string queueName, 
+            string type,
             string id)
         {
-            PartitionKey = queueName;
+            PartitionKey = type;
             RowKey = id;
         }
     }

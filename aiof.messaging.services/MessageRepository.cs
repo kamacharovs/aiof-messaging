@@ -45,15 +45,7 @@ namespace aiof.messaging.services
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
         }
 
-        public async Task SendInboundMessageAsync(IMessage message)
-        {
-            await _tableRepo.LogAsync(message);
-            await _messageValidator.ValidateAndThrowAsync(message);
-            await SendMessageAsync(message);
-        }
-
-        public async Task SendMessageAsync<T>(T message)
-            where T : IMessage
+        public async Task SendEmailMessageAsync(IEmailMessage message)
         {
             var messageStr = JsonConvert.SerializeObject(message);
             var queueName = _envConfig.InboundQueueName;
@@ -64,23 +56,6 @@ namespace aiof.messaging.services
 
             _logger.LogInformation("Sent message={message} to queue={queue}",
                 messageStr,
-                queueName);
-        }
-
-        public async Task SendEmailMessageAsync<T>(T message)
-            where T : IEmailMessage
-        {
-            var emailMessageStr = JsonConvert.SerializeObject(message);
-            var queueName = _envConfig.EmailQueueName;
-            var sender = _client.CreateSender(queueName);
-            var serviceBusMessage = new ServiceBusMessage(emailMessageStr);
-
-            await _tableRepo.LogAsync(message);
-
-            await sender.SendMessageAsync(serviceBusMessage);
-
-            _logger.LogInformation("Sent message={message} to queue={queue}",
-                emailMessageStr,
                 queueName);
         }
 
