@@ -45,22 +45,10 @@ namespace aiof.messaging.services
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
         }
 
-        public async Task SendEmailMessageAsync(IEmailMessage message)
-        {
-            var messageStr = JsonConvert.SerializeObject(message);
-            var queueName = _envConfig.InboundQueueName;
-            var sender = _client.CreateSender(queueName);
-            var serviceBusMessage = new ServiceBusMessage(messageStr);
-
-            await sender.SendMessageAsync(serviceBusMessage);
-
-            _logger.LogInformation("Sent message={message} to queue={queue}",
-                messageStr,
-                queueName);
-        }
-
         public async Task SendAsync(IMessage message)
         {
+            await _messageValidator.ValidateAndThrowAsync(message);
+
             if (message.Type == MessageType.Email)
             {
                 if (message.TestConfig?.IsTest == true
@@ -81,8 +69,23 @@ namespace aiof.messaging.services
                  * Send email message to email queue
                  */
                 await _emailMessageValidator.ValidateAndThrowAsync(emailMessage);
+                await _tableRepo.LogAsync(emailMessage);
                 await SendEmailMessageAsync(emailMessage);
             }
+        }
+
+        public async Task SendEmailMessageAsync(IEmailMessage message)
+        {
+            var messageStr = JsonConvert.SerializeObject(message);
+            var queueName = _envConfig.EmailQueueName;
+            var sender = _client.CreateSender(queueName);
+            var serviceBusMessage = new ServiceBusMessage(messageStr);
+
+            await sender.SendMessageAsync(serviceBusMessage);
+
+            _logger.LogInformation("Sent message={message} to queue={queue}",
+                messageStr,
+                queueName);
         }
     }
 }

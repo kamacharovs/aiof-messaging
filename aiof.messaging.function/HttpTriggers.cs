@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 
+using FluentValidation;
+
 using aiof.messaging.data;
 using aiof.messaging.services;
 
@@ -16,7 +18,9 @@ namespace aiof.messaging.function
     {
         private readonly ITableRepository _repo;
 
-        public HttpTriggers(ITableRepository repo)
+        public HttpTriggers(
+            ITableRepository repo,
+            AbstractValidator<IMessage> messageValidator)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
