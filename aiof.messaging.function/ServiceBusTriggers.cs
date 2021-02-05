@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.WebJobs;
+using Azure.Messaging.ServiceBus;
 
 using aiof.messaging.data;
 using aiof.messaging.services;
@@ -22,6 +23,13 @@ namespace aiof.messaging.function
             [ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] Message message)
         {
             await _repo.SendAsync(message);
+        }
+
+        [FunctionName("InboundDeadLetterQueue")]
+        public async Task InboundDeadLetterQueueAsync(
+            [ServiceBusTrigger("inbound/$DeadLetterQueue", Connection = "ServiceBusConnectionString")] Message message)
+        {
+            int k = 0;
         }
     }
 }

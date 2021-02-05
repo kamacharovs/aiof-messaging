@@ -27,7 +27,7 @@ namespace aiof.messaging.function
 
         [FunctionName("MessageSend")]
         [return: ServiceBus("inbound", Connection = "ServiceBusConnectionString")]
-        public async Task<IMessage> MessageSend(
+        public async Task<IMessage> MessageSendAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message/send")] Message message)
         {
             await _repo.LogAsync(message);
