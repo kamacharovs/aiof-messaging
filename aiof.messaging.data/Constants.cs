@@ -8,6 +8,7 @@ namespace aiof.messaging.data
     {
         public const string Success = nameof(Success);
         public const string Fail = nameof(Fail);
+        public const string Received = nameof(Received);
         public const string Retry = nameof(Retry);
     }
 

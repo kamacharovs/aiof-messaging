@@ -46,12 +46,6 @@ namespace aiof.messaging.services
             _emailMessageValidator = emailMessageValidator ?? throw new ArgumentNullException(nameof(emailMessageValidator));
         }
 
-        public async Task SendInboundMessageAsync(IMessage message)
-        {
-            await _messageValidator.ValidateAndThrowAsync(message);
-            await SendMessageAsync(_envConfig.InboundQueueName, message);
-        }
-
         public async Task SendEmailMessageAsync(IEmailMessage message)
         {
             await _emailMessageValidator.ValidateAndThrowAsync(message);

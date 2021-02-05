@@ -15,6 +15,8 @@ namespace aiof.messaging.services
             IMessage message,
             IEmailMessage emailMessage);
 
+        Task LogAsync(IMessage message);
+
         Task<T> InsertOrMergeAsync<T>(
             string tableName,
             T entity) where T : TableEntity;

@@ -83,8 +83,6 @@ namespace aiof.messaging.tests
         {
             var repo = new Mock<IMessageRepository>();
 
-            repo.Setup(x => x.SendInboundMessageAsync(It.IsAny<IMessage>()))
-                .Verifiable();
             repo.Setup(x => x.SendEmailMessageAsync(It.IsAny<IEmailMessage>()))
                 .Verifiable();
             repo.Setup(x => x.SendMessageAsync(It.IsAny<string>(), It.IsAny<object>()))

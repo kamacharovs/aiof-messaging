@@ -57,16 +57,17 @@ namespace aiof.messaging.data
         public string Type { get; set; }
         public int? UserId { get; set; }
         public DateTime Created { get; set; }
+        public string Raw { get; set; }
 
 
         public MessageEntity()
         { }
 
         public MessageEntity(
-            string queueName, 
+            string type,
             string id)
         {
-            PartitionKey = queueName;
+            PartitionKey = type;
             RowKey = id;
         }
     }
