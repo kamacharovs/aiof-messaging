@@ -40,7 +40,6 @@ namespace aiof.messaging.services
 
             emailMsgEntity.PartitionKey = _envConfig.EmailQueueName;
             emailMsgEntity.RowKey = message.PublicKey.ToString();
-            emailMsgEntity.Raw = JsonConvert.SerializeObject(emailMessage);
 
             await InsertOrMergeAsync(_envConfig.EmailTableName, emailMsgEntity);
         }
@@ -48,9 +47,6 @@ namespace aiof.messaging.services
         public async Task LogAsync(IMessage message)
         {
             var emailEntity = _mapper.Map<MessageEntity>(message);
-
-            emailEntity.PartitionKey = message.Type.ToLower();
-            emailEntity.RowKey = message.PublicKey.ToString();
 
             await InsertOrMergeAsync(_envConfig.InboundQueueName, emailEntity);
         }
