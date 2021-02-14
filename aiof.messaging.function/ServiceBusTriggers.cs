@@ -19,7 +19,7 @@ namespace aiof.messaging.function
 
         [FunctionName("Inbound")]
         public async Task InboundAsync(
-            [ServiceBusTrigger("inbound", Connection = "ServiceBusConnectionString")] Message message)
+            [ServiceBusTrigger("%InboundQueueName%", Connection = "ServiceBusConnectionString")] Message message)
         {
             await _repo.SendAsync(message);
         }

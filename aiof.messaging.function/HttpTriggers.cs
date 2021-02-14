@@ -22,7 +22,7 @@ namespace aiof.messaging.function
         }
 
         [FunctionName("MessageSend")]
-        [return: ServiceBus("inbound", Connection = "ServiceBusConnectionString")]
+        [return: ServiceBus("%InboundQueueName%", Connection = "ServiceBusConnectionString")]
         public async Task<IMessage> MessageSend(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message/send")] Message message)
         {
