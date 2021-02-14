@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Net;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 
@@ -26,7 +25,7 @@ namespace aiof.messaging.function
         }
 
         [FunctionName("MessageSend")]
-        [return: ServiceBus("inbound", Connection = "ServiceBusConnectionString")]
+        [return: ServiceBus("%InboundQueueName%", Connection = "ServiceBusConnectionString")]
         public async Task<IMessage> MessageSendAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message/send")] Message message)
         {

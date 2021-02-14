@@ -31,7 +31,7 @@ namespace aiof.messaging.function
 
         [FunctionName("InboundDeadLetterQueue")]
         public async Task InboundDeadLetterQueueAsync(
-            [ServiceBusTrigger("inbound/$DeadLetterQueue", Connection = "ServiceBusConnectionString")] Message message)
+            [ServiceBusTrigger("%InboundQueueName%/$DeadLetterQueue", Connection = "ServiceBusConnectionString")] Message message)
         {
             await _tableRepo.LogDeadLetterAsync("inbound", message);
         }
