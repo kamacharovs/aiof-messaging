@@ -13,6 +13,7 @@ namespace aiof.messaging.data
     /// </summary>
     public class EmailMessage : IEmailMessage
     {
+        public Guid PublicKey { get; set; }
         public string From { get; set; }
         public string To { get; set; }
         public string Subject { get; set; }
@@ -40,9 +41,11 @@ namespace aiof.messaging.data
         public EmailMessageEntity()
         { }
 
-        public EmailMessageEntity(string id)
+        public EmailMessageEntity(
+            string queueName,
+            string id)
         {
-            PartitionKey = Keys.EmailQueueName;
+            PartitionKey = queueName;
             RowKey = id;
         }
     }

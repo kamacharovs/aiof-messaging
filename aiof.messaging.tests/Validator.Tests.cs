@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-using FluentValidation;
 using Xunit;
+using FluentValidation;
 
 using aiof.messaging.data;
 

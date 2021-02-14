@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Cosmos.Table;
+using Azure.Messaging.ServiceBus;
 
 using Newtonsoft.Json;
 using AutoMapper;
@@ -32,26 +33,38 @@ namespace aiof.messaging.services
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task LogAsync(
-            IMessage message,
-            IEmailMessage emailMessage)
+        public async Task LogAsync(IEmailMessage message)
         {
-            var emailMsgEntity = _mapper.Map<EmailMessageEntity>(emailMessage);
+            var emailMessageEntity = _mapper.Map<EmailMessageEntity>(message);
 
-            emailMsgEntity.PartitionKey = _envConfig.EmailQueueName;
-            emailMsgEntity.RowKey = message.PublicKey.ToString();
+            emailMessageEntity.RowKey = message.PublicKey.ToString();
+            emailMessageEntity.PartitionKey = _envConfig.EmailQueueName.ToLowerInvariant();
 
-            await InsertOrMergeAsync(_envConfig.EmailTableName, emailMsgEntity);
+            await InsertAsync(_envConfig.EmailTableName, emailMessageEntity);
         }
 
         public async Task LogAsync(IMessage message)
         {
-            var emailEntity = _mapper.Map<MessageEntity>(message);
+            var messageEntity = _mapper.Map<MessageEntity>(message);
 
-            await InsertOrMergeAsync(_envConfig.InboundQueueName, emailEntity);
+            messageEntity.RowKey = message.PublicKey.ToString();
+            messageEntity.PartitionKey = message.Type.ToLowerInvariant();
+
+            await InsertAsync(_envConfig.InboundTableName, messageEntity);
         }
 
-        public async Task<T> InsertOrMergeAsync<T>(
+        public async Task LogDeadLetterAsync(
+            string queueName,
+            IMessage message)
+        {
+            var messageDeadLetterEntity = _mapper.Map<MessageDeadLetterEntity>(message);
+
+            messageDeadLetterEntity.PartitionKey = queueName.ToLowerInvariant();
+
+            await InsertAsync(_envConfig.DeadLetterTableName, messageDeadLetterEntity);
+        }
+
+        public async Task<T> InsertAsync<T>(
             string tableName,
             T entity) where T : TableEntity
         {
@@ -63,8 +76,8 @@ namespace aiof.messaging.services
             try
             {
                 var table = _client.GetTableReference(tableName);
-                var insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
-                var result = await table.ExecuteAsync(insertOrMergeOperation);
+                var insertOperation = TableOperation.Insert(entity);
+                var result = await table.ExecuteAsync(insertOperation);
 
                 return result.Result as T;
             }
