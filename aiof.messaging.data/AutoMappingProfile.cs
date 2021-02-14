@@ -20,7 +20,7 @@ namespace aiof.messaging.data
                 .ForMember(x => x.Bcc, o => o.MapFrom(s => string.Join(",", s.Bcc)));
 
             CreateMap<IMessage, MessageEntity>()
-                .ForMember(x => x.PartitionKey, o => o.MapFrom(s => s.Type.ToLower()))
+                .ForMember(x => x.PartitionKey, o => o.MapFrom(s => s.Type.ToLowerInvariant()))
                 .ForMember(x => x.RowKey, o => o.MapFrom(s => s.PublicKey.ToString()))
                 .ForMember(x => x.PublicKey, o => o.MapFrom(s => s.PublicKey))
                 .ForMember(x => x.Type, o => o.MapFrom(s => s.Type))

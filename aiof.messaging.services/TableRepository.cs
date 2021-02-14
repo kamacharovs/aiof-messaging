@@ -47,9 +47,6 @@ namespace aiof.messaging.services
         {
             var messageEntity = _mapper.Map<MessageEntity>(message);
 
-            messageEntity.RowKey = message.PublicKey.ToString();
-            messageEntity.PartitionKey = message.Type.ToLowerInvariant();
-
             await InsertAsync(_envConfig.InboundTableName, messageEntity);
         }
 
