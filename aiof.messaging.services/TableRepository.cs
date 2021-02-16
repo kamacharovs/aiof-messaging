@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Cosmos.Table;
-using Azure.Messaging.ServiceBus;
 
 using Newtonsoft.Json;
 using AutoMapper;
@@ -84,7 +83,7 @@ namespace aiof.messaging.services
                     nameof(T),
                     JsonConvert.SerializeObject(entity));
 
-                throw;
+                throw e;
             }
         }
     }

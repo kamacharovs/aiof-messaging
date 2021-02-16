@@ -12,6 +12,8 @@ namespace aiof.messaging.data
         string Subject { get; set; }
         string Cc { get; set; }
         string Bcc { get; set; }
+        bool IsBodyHtml { get; set; }
+        string Body { get; set; }
 
         string ToString();
     }

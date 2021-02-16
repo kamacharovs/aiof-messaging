@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.WebJobs;
-using Azure.Messaging.ServiceBus;
 
 using aiof.messaging.data;
 using aiof.messaging.services;

@@ -31,6 +31,8 @@ namespace aiof.messaging.data
         public string Subject { get; set; }
         public ICollection<string> Cc { get; set; } = new List<string>();
         public ICollection<string> Bcc { get; set; } = new List<string>();
+        public bool IsBodyHtml { get; set; } = false;
+        public string Body { get; set; }
 
         public override string ToString()
         {

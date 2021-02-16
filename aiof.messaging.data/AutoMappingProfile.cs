@@ -17,7 +17,9 @@ namespace aiof.messaging.data
                 .ForMember(x => x.To, o => o.MapFrom(s => s.To))
                 .ForMember(x => x.Subject, o => o.MapFrom(s => s.Subject))
                 .ForMember(x => x.Cc, o => o.MapFrom(s => string.Join(",", s.Cc)))
-                .ForMember(x => x.Bcc, o => o.MapFrom(s => string.Join(",", s.Bcc)));
+                .ForMember(x => x.Bcc, o => o.MapFrom(s => string.Join(",", s.Bcc)))
+                .ForMember(x => x.IsBodyHtml, o => o.MapFrom(s => s.IsBodyHtml))
+                .ForMember(x => x.Body, o => o.MapFrom(s => s.Body));
 
             CreateMap<IMessage, MessageEntity>()
                 .ForMember(x => x.PartitionKey, o => o.MapFrom(s => s.Type.ToLowerInvariant()))
@@ -45,6 +47,8 @@ namespace aiof.messaging.data
                 .ForMember(x => x.Subject, o => o.MapFrom(s => s.Subject))
                 .ForMember(x => x.Cc, o => o.MapFrom(s => s.Cc))
                 .ForMember(x => x.Bcc, o => o.MapFrom(s => s.Bcc))
+                .ForMember(x => x.IsBodyHtml, o => o.MapFrom(s => s.IsBodyHtml))
+                .ForMember(x => x.Body, o => o.MapFrom(s => s.Body))
                 .ForMember(x => x.Raw, o => o.MapFrom(s => JsonConvert.SerializeObject(s)));
         }
     }

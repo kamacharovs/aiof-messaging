@@ -19,6 +19,8 @@ namespace aiof.messaging.data
         public string Subject { get; set; }
         public string Cc { get; set; }
         public string Bcc { get; set; }
+        public bool IsBodyHtml { get; set; } = false;
+        public string Body { get; set; }
 
         public override string ToString()
         {
@@ -36,6 +38,8 @@ namespace aiof.messaging.data
         public string Subject { get; set; }
         public string Cc { get; set; }
         public string Bcc { get; set; }
+        public bool IsBodyHtml { get; set; }
+        public string Body { get; set; }
         public string Raw { get; set; }
 
         public EmailMessageEntity()

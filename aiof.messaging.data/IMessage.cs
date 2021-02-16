@@ -18,5 +18,7 @@ namespace aiof.messaging.data
         string Subject { get; set; }
         ICollection<string> Cc { get; set; }
         ICollection<string> Bcc { get; set; }
+        bool IsBodyHtml { get; set; }
+        string Body { get; set; }
     }
 }
