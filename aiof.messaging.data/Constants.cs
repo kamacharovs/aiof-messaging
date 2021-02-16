@@ -22,6 +22,8 @@ namespace aiof.messaging.data
             Email,
             Sms
         };
+
+        public static string AllAsString => string.Join(',', All);
     }
 
     public static class Keys

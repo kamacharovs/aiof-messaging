@@ -29,7 +29,8 @@ namespace aiof.messaging.data
                         .Contains(x)
                         ? true
                         : false;
-                });
+                })
+                .WithMessage($"{nameof(Message.Type)} must be one of the following {MessageType.AllAsString}");
         }
     }
 

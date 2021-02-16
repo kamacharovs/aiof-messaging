@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 using Xunit;
 using FluentValidation;
@@ -46,7 +47,10 @@ namespace aiof.messaging.tests
                 Type = type
             };
 
-            Assert.False(_messageValidator.Validate(message).IsValid);
+            var validation = _messageValidator.Validate(message);
+
+            Assert.False(validation.IsValid);
+            Assert.Contains(nameof(Message.Type), validation.Errors.First().ErrorMessage);
         }
 
         [Theory]
@@ -115,6 +119,7 @@ namespace aiof.messaging.tests
         }
 
         [Theory]
+        [InlineData("test1@@email.com,test2")]
         [InlineData("test1,test2")]
         [InlineData(",test2")]
         [InlineData("test1,")]
@@ -134,6 +139,7 @@ namespace aiof.messaging.tests
         }
 
         [Theory]
+        [InlineData("test1@@email.com,test2")]
         [InlineData("test1,test2")]
         [InlineData(",test2")]
         [InlineData("test1,")]
