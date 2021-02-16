@@ -33,6 +33,7 @@ namespace aiof.messaging.tests
 
             Assert.True(_messageValidator.Validate(message).IsValid);
         }
+
         [Theory]
         [InlineData("somerandomtype")]
         [InlineData("definitelydoesntexit")]
@@ -63,6 +64,7 @@ namespace aiof.messaging.tests
 
             Assert.True(_emailMessageValidator.Validate(emailMessage).IsValid);
         }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -79,6 +81,7 @@ namespace aiof.messaging.tests
 
             Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);
         }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -95,6 +98,7 @@ namespace aiof.messaging.tests
 
             Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);
         }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -105,6 +109,40 @@ namespace aiof.messaging.tests
                 From = "finance@aiof.com",
                 To = "finance2@aiof.com",
                 Subject = subject
+            };
+
+            Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);
+        }
+
+        [Theory]
+        [InlineData("test1,test2")]
+        [InlineData(",test2")]
+        [InlineData("test1,")]
+        public void MessageEmail_Cc_IsInvalid(string cc)
+        {
+            var emailMessage = new EmailMessage
+            {
+                From = "finance@aiof.com",
+                To = "finance2@aiof.com",
+                Subject = "This is a subject",
+                Cc = cc
+            };
+
+            Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);
+        }
+
+        [Theory]
+        [InlineData("test1,test2")]
+        [InlineData(",test2")]
+        [InlineData("test1,")]
+        public void MessageEmail_Bcc_IsInvalid(string bcc)
+        {
+            var emailMessage = new EmailMessage
+            {
+                From = "finance@aiof.com",
+                To = "finance2@aiof.com",
+                Subject = "This is a subject",
+                Bcc = bcc
             };
 
             Assert.False(_emailMessageValidator.Validate(emailMessage).IsValid);

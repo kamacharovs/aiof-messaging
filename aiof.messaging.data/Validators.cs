@@ -61,7 +61,7 @@ namespace aiof.messaging.data
                 {
                     return AreEmailsValid(x);
                 })
-                .When(x => !string.IsNullOrWhiteSpace(x.Cc));
+                .When(x => !string.IsNullOrWhiteSpace(x.Bcc));
 
             RuleFor(x => x.Body)
                 .Length(1, 5000)
@@ -78,6 +78,10 @@ namespace aiof.messaging.data
                     _ = new MailAddress(emailaddress);
 
                 return true;
+            }
+            catch (ArgumentException)
+            {
+                return false;
             }
             catch (FormatException)
             {
