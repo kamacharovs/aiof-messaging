@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Linq;
 using System.Net.Mail;
 
@@ -7,6 +8,12 @@ using FluentValidation;
 
 namespace aiof.messaging.data
 {
+    public static class CommonValidator
+    {
+        public static string RegexEmail = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+        public static string RegexPhoneNumber = @" ^ (\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$";
+    }
+
     public class MessageValidator : AbstractValidator<IMessage>
     {
         public MessageValidator()
@@ -70,23 +77,17 @@ namespace aiof.messaging.data
 
         public bool AreEmailsValid(string emailAddresses)
         {
-            try
-            {
-                var emailAddressesSplit = emailAddresses.Split(',');
+            var emailAddressesSplit = emailAddresses.Split(',');
 
-                foreach (var emailaddress in emailAddressesSplit)
-                    _ = new MailAddress(emailaddress);
+            foreach (var emailAddress in emailAddressesSplit)
+            {
+                var match = Regex.Match(emailAddress, CommonValidator.RegexEmail, RegexOptions.IgnoreCase);
 
-                return true;
+                if (!match.Success)
+                    return false;
             }
-            catch (ArgumentException)
-            {
-                return false;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+
+            return true;
         }
     }
 }

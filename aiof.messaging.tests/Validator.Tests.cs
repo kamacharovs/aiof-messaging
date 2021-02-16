@@ -118,6 +118,8 @@ namespace aiof.messaging.tests
         [InlineData("test1,test2")]
         [InlineData(",test2")]
         [InlineData("test1,")]
+        [InlineData("test1@.come,test2,test3@.com")]
+        [InlineData("test1,test2,test3@.com")]
         public void MessageEmail_Cc_IsInvalid(string cc)
         {
             var emailMessage = new EmailMessage
@@ -135,6 +137,8 @@ namespace aiof.messaging.tests
         [InlineData("test1,test2")]
         [InlineData(",test2")]
         [InlineData("test1,")]
+        [InlineData("test1@.come,test2,test3@.com")]
+        [InlineData("test1,test2,test3@.com")]
         public void MessageEmail_Bcc_IsInvalid(string bcc)
         {
             var emailMessage = new EmailMessage
