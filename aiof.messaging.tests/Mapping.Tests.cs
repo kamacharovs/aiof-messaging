@@ -31,7 +31,9 @@ namespace aiof.messaging.tests
             {
                 From = from,
                 To = to,
-                Subject = subject
+                Subject = subject,
+                IsBodyHtml = true,
+                Body = "<body><h1>Test</h1></body>"
             } as IMessage;
 
             var emailMessage = _mapper.Map<IEmailMessage>(message);
@@ -41,6 +43,8 @@ namespace aiof.messaging.tests
             Assert.Equal(from, emailMessage.From);
             Assert.Equal(to, emailMessage.To);
             Assert.Equal(subject, emailMessage.Subject);
+            Assert.True(emailMessage.IsBodyHtml);
+            Assert.NotNull(emailMessage.Body);
         }
 
         [Theory]
@@ -72,7 +76,9 @@ namespace aiof.messaging.tests
             {
                 From = from,
                 To = to,
-                Subject = subject
+                Subject = subject,
+                IsBodyHtml = true,
+                Body = "<body><h1>Test</h1></body>"
             } as IEmailMessage;
 
             var emailMessageEntity = _mapper.Map<EmailMessageEntity>(emailMessage);
@@ -81,6 +87,8 @@ namespace aiof.messaging.tests
             Assert.Equal(from, emailMessageEntity.From);
             Assert.Equal(to, emailMessageEntity.To);
             Assert.Equal(subject, emailMessageEntity.Subject);
+            Assert.True(emailMessage.IsBodyHtml);
+            Assert.NotNull(emailMessage.Body);
         }
     }
 }
