@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Net.Mail;
 
 using FluentValidation;
 
@@ -48,6 +48,41 @@ namespace aiof.messaging.data
                 .NotNull()
                 .NotEmpty()
                 .Length(1, 300);
+
+            RuleFor(x => x.Cc)
+                .Must(x =>
+                {
+                    return AreEmailsValid(x);
+                })
+                .When(x => !string.IsNullOrWhiteSpace(x.Cc));
+
+            RuleFor(x => x.Bcc)
+                .Must(x =>
+                {
+                    return AreEmailsValid(x);
+                })
+                .When(x => !string.IsNullOrWhiteSpace(x.Cc));
+
+            RuleFor(x => x.Body)
+                .Length(1, 5000)
+                .When(x => !string.IsNullOrWhiteSpace(x.Body));
+        }
+
+        public bool AreEmailsValid(string emailAddresses)
+        {
+            try
+            {
+                var emailAddressesSplit = emailAddresses.Split(',');
+
+                foreach (var emailaddress in emailAddressesSplit)
+                    _ = new MailAddress(emailaddress);
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
     }
 }

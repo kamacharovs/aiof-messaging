@@ -57,7 +57,8 @@ namespace aiof.messaging.tests
             {
                 From = from,
                 To = to,
-                Subject = "This is a test subject"
+                Subject = "This is a test subject",
+                Body = "This is a test"
             };
 
             Assert.True(_emailMessageValidator.Validate(emailMessage).IsValid);
